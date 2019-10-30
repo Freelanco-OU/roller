@@ -1,3 +1,5 @@
+// @flow
+
 const {
   ELEMENT_Z_INDEX,
   ELEMENT_TRANSITION,
@@ -6,20 +8,23 @@ const {
 } = require('../constants.js')
 const { wait } = require('../utils/helpers.js')
 
+type FocusOptions = {
+  beforeHighlight?: (node: HTMLElement, wait: typeof wait) => Promise<void>,
+  afterHighlight?: (node: HTMLElement, wait: typeof wait) => Promise<void>
+}
+
 /**
  * Main class that represent highlighter.
- * Also can start guide in the page.
  */
 class Focus {
+  node: ?HTMLElement
+  _options: FocusOptions
+  _initialStyles: ?CSSStyleDeclaration
+
   /**
    * Construct `Focus` instance.
-   * @param {HTMLElement | String} element
-   * @param {{
-   *  beforeHighlight?: (node: HTMLElement, wait: (seconds: Number | String) => Promise<void>) => Promise<void>,
-   *  afterHighlight?: (node: HTMLElement, wait: (seconds: Number | String) => Promise<void>) => Promise<void>
-   * }} [options]
    */
-  constructor(element, options) {
+  constructor(element: HTMLElement | string, options?: FocusOptions) {
     if (typeof element === 'string') {
       /** @type {HTMLElement} */
       this.node = document.querySelector(element)
@@ -31,44 +36,50 @@ class Focus {
   }
 
   /** Highlight single `element` on the page. */
-  async highlight() {
-    if (this._options.beforeHighlight) {
-      await this._options.beforeHighlight(this.node, wait)
-    }
-
+  async highlight(): Promise<?HTMLElement> {
     if (this.node) {
-      // Remember initial styles of element. Will be needed in canceling focus.
-      this._initialStyles = getComputedStyle(this.node)
+      const node = this.node
 
-      let parent = this.node
+      if (this._options.beforeHighlight) {
+        await this._options.beforeHighlight(node, wait)
+      }
+
+      // Remember initial styles of element. Will be needed in canceling focus.
+      this._initialStyles = (getComputedStyle(node): CSSStyleDeclaration) // TODO: checks for accepting pull request
+
+      let parent = node
       let backgroundColor = this._initialStyles.backgroundColor
-      while (!backgroundColor || backgroundColor === 'rgba(0, 0, 0, 0)') {
-        parent = parent.parentElement
+      while (backgroundColor === 'rgba(0, 0, 0, 0)') {
+        if (parent.parentElement) {
+          parent = parent.parentElement
+        }
+
         if (parent) {
-          backgroundColor = getComputedStyle(parent).backgroundColor
+          backgroundColor = (getComputedStyle(parent): CSSStyleDeclaration)
+            .backgroundColor
         } else {
           backgroundColor = ELEMENT_BACKGROUND_COLOR
         }
       }
 
       // Styles need to be set inline, because program may add additional styles.
-      this.node.style.transition = ELEMENT_TRANSITION
-      this.node.style.zIndex = `${ELEMENT_Z_INDEX}`
-      this.node.style.backgroundColor = backgroundColor
+      node.style.transition = ELEMENT_TRANSITION
+      node.style.zIndex = `${ELEMENT_Z_INDEX}`
+      node.style.backgroundColor = backgroundColor
       if (
         this._initialStyles.position === 'initial' ||
         this._initialStyles.position === 'static'
       ) {
-        this.node.style.position = ELEMENT_POSITION
+        node.style.position = ELEMENT_POSITION
       }
 
-      this.node.classList.add('roller-highlighted-element')
+      node.classList.add('roller-highlighted-element')
+
+      if (this._options.afterHighlight) {
+        await this._options.afterHighlight(node, wait)
+      }
     } else {
       console.error('No element to highlight!')
-    }
-
-    if (this._options.afterHighlight) {
-      await this._options.afterHighlight(this.node, wait)
     }
 
     return this.node
@@ -76,8 +87,12 @@ class Focus {
 
   /** Cancel highlight. */
   cancel() {
-    this.node.removeAttribute('style')
-    this.node.classList.remove('roller-highlighted-element')
+    if (this.node) {
+      const node = this.node
+
+      node.removeAttribute('style')
+      node.classList.remove('roller-highlighted-element')
+    }
   }
 }
 

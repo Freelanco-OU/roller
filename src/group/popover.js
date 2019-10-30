@@ -1,3 +1,5 @@
+// @flow
+
 const {
   POPOVER_Z_INDEX,
   POPOVER_OFFSET,
@@ -20,21 +22,41 @@ const {
 const Controller = require('../controller.js')
 const { stylify } = require('../utils/helpers.js')
 
+type PopoverPosition = 'top' | 'bottom' | 'left' | 'right' | 'auto'
+
+type PopoverOptions = {
+  position?: PopoverPosition,
+  offset?: number,
+  title: string,
+  description?: string,
+  styles?: {
+    popover?: { [string]: string | number },
+    title?: { [string]: string | number },
+    description?: { [string]: string | number }
+  },
+  isolateClickEvents?: boolean
+}
+
 /**
  * Construct popover for element that is highlighted.
  */
 class Popover {
+  _options: {
+    position: PopoverPosition,
+    offset: number
+  }
+
+  _onResize: EventHandler
+  node: HTMLElement
+
   /**
    * Build popover.
-   * @param {Object} options
-   * @param {'top' | 'bottom' | 'left' | 'right' | 'auto'} [options.position='auto'] Position of the popover according to highlighted element.
-   * @param {Number} [options.offset=10] Offset of the popover from element.
-   * @param {String} options.title
-   * @param {String} [options.description]
-   * @param {{ popover?: { [key: String]: String | Number | Boolean }, title?: { [key: String]: String | Number | Boolean }, description?: { [key: String]: String | Number | Boolean } }} [options.styles] Custom styles for popover.
-   * @param {Boolean} [options.isolateClickEvents] Isolates *click* events from bubbling out of the popover.
+   * `position` - Position of the popover according to highlighted element. Default is `auto`.
+   * `offset` - Offset of the popover from element. Default is `10`.
+   * `styles` - Custom styles for popover.
+   * `isolateClickEvents` - Isolates *click* events from bubbling out of the popover.
    */
-  constructor(options) {
+  constructor(options: PopoverOptions) {
     const styles = options.styles || {}
     const popoverStyles = styles.popover || {}
     const titleStyles = styles.title || {}
@@ -73,7 +95,9 @@ class Popover {
         'line-height': POPOVER_DESCRIPTION_LINE_HEIGHT,
         ...descriptionStyles
       }))
-      description.append(options.description)
+      if (options.description) {
+        description.append(options.description)
+      }
       popover.append(description)
     }
 
@@ -84,33 +108,36 @@ class Popover {
 
     // Don't propagate event to outer elements, except of highlighted element.
     if (options.isolateClickEvents) {
-      popover.addEventListener('click', (event) => { event.stopPropagation() })
+      popover.addEventListener('click', (event: Event) => {
+        event.stopPropagation()
+      })
     }
 
-    /** @type {HTMLElement} */
     this.node = popover
   }
 
   /**
    * Construct and show popover near highlighted element.
-   * @param {HTMLElement} element
    */
-  show(element) {
-    document.body.append(this.node)
+  show(element: HTMLElement) {
+    if (document.body) {
+      document.body.append(this.node)
+    }
 
     requestAnimationFrame(() => {
       this.node.style.opacity = '1'
     })
 
-    this._onResize = (event) => {
+    const repaintFunction = () => {
       const elementSize = element.getBoundingClientRect()
-      calcPopoverPosition(elementSize, this.node, {
-        position: this._options.position,
-        offset: this._options.offset
-      })
+      calcPopoverPosition(elementSize, this.node, this._options)
+    }
+    this._onResize = (event: Event) => {
+      repaintFunction()
     }
     window.addEventListener('resize', this._onResize)
-    this._onResize()
+
+    repaintFunction()
   }
 
   /** Closes this popover. */
@@ -121,22 +148,24 @@ class Popover {
 
   /**
    * Add controller to popover.
-   * @param {Controller} controller
    */
-  _addController(controller) {
+  _addController(controller: Controller) {
     this.node.append(controller.node)
   }
 }
 
 /**
  * Calculate position of popover.
- * @param {ClientRect | DOMRect} elementSize Element concerning which popover need to be positioned.
- * @param {HTMLElement} popover
- * @param {Object} options
- * @param {PopoverPosition} options.position String that signal what position of popover is preferred. Default `auto`.
- * @param {Number} options.offset
+ * `elementSize` - Element concerning which popover need to be positioned.
+ * `position` - String that signal what position of popover is preferred. Default `auto`.
  */
-function calcPopoverPosition(elementSize, popover, options) {
+function calcPopoverPosition(
+  elementSize: ClientRect | DOMRect,
+  popover: HTMLElement,
+  options: {
+    position: PopoverPosition,
+    offset: number
+  }) {
   const popoverSize = popover.getBoundingClientRect()
 
   switch (options.position) {
@@ -163,13 +192,14 @@ function calcPopoverPosition(elementSize, popover, options) {
 
 /**
  * Calculate position of popover.
- * @param {ClientRect | DOMRect} elementSize Element concerning which popover need to be positioned.
- * @param {HTMLElement} popover
- * @param {Object} options
- * @param {Number} options.offset
+ * `elementSize` - Element concerning which popover need to be positioned.
  */
-function autoPositionPopover(elementSize, popover, { offset }) {
-  const documentSize = document.body.getBoundingClientRect()
+function autoPositionPopover(elementSize: ClientRect | DOMRect, popover: HTMLElement, options: { offset: number }) {
+  const { offset } = options
+
+  const documentSize = document.body
+    ? document.body.getBoundingClientRect()
+    : { width: 0, height: 0 }
   const popoverSize = popover.getBoundingClientRect()
 
   if ((elementSize.top - offset) - popoverSize.height > 0) {

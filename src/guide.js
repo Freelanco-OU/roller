@@ -1,3 +1,8 @@
+// @flow
+
+import type { HighlightGroup } from './roller.js'
+import typeof { wait } from './utils/helpers.js'
+
 const Controller = require('./controller.js')
 // eslint-disable-next-line no-unused-vars
 const Overlay = require('./group/overlay.js')
@@ -7,23 +12,43 @@ const Focus = require('./group/focus.js')
 const Popover = require('./group/popover.js')
 const Roller = require('./roller.js')
 
+type GuideControllerOptions = {
+  skipButtonText?: string,
+  prevButtonText?: string,
+  nextButtonText?: string,
+  doneButtonText?: string,
+  footerStyle?: { [string]: string | number },
+  skipButtonStyle?: { [string]: string | number },
+  prevButtonStyle?: { [string]: string | number },
+  nextButtonStyle?: { [string]: string | number },
+  doneButtonStyle?: { [string]: string | number }
+}
+
+type GuideOptions = {
+  groups: HighlightGroup[],
+  overlay?: Overlay,
+  onDone?: () => void,
+  onSkip?: () => void
+}
+
 /** Class that creates controls elements in popover, when guide is started. */
 class Guide {
+  _steps: number
+  _currentStep: number
+  _groups: HighlightGroup[]
+  _overlay: Overlay
+  _onDone: ?(() => void)
+  _onSkip: ?(() => void)
+  _controller: Controller
+  _roller: Roller
+
   /**
    * Defines `options` for *Guide* object.
-   * @param {Object} options
-   * @param {{
-   *  beforeInsert?: (wait: (seconds: Number | String) => Promise<void>) => Promise<void>,
-   *  overlay?: Overlay,
-   *  element: Focus,
-   *  popover: Popover,
-   *  afterRemove?: (wait: (seconds: Number | String) => Promise<void>) => Promise<void>
-   * }[]} options.groups Steps of guide.
-   * @param {Overlay} [options.overlay] Common overlay for guide object.
-   * @param {() => void} [options.onDone] Executes when user has finished guide.
-   * @param {() => void} [options.onSkip] Executes when user has finished guide.
+   * `overlay` - Common overlay for guide object.
+   * `onDone` - Executes when user has finished guide.
+   * `onSkip` - Executes when user has finished guide.
    */
-  constructor(options) {
+  constructor(options: GuideOptions) {
     this._steps = options.groups.length
     this._currentStep = 0
     this._groups = options.groups
@@ -34,18 +59,8 @@ class Guide {
 
   /**
    * Creates and configures common controller.
-   * @param {Object} [options]
-   * @param {String} [options.skipButtonText]
-   * @param {String} [options.prevButtonText]
-   * @param {String} [options.nextButtonText]
-   * @param {String} [options.doneButtonText]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.footerStyle]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.skipButtonStyle]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.prevButtonStyle]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.nextButtonStyle]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.doneButtonStyle]
    */
-  configure(options = {}) {
+  configure(options?: GuideControllerOptions = {}) {
     this._controller = new Controller({
       onSkip: (event) => {
         this.cancel()
@@ -64,7 +79,7 @@ class Guide {
       onNext: (event) => {
         this.cancel()
 
-        if (this._currentStep === this._groups.length - 1) {
+        if (this._currentStep === this._groups.length - 1 && this._onDone) {
           this._onDone()
         } else {
           this.move(++this._currentStep)
@@ -92,9 +107,9 @@ class Guide {
 
   /**
    * Move to next group.
-   * @param {Number} step Number of step. Must be in range from 0 to length of `groups - 1`.
+   * `step` - Number of step. Must be in range from 0 to length of `groups - 1`.
    */
-  move(step) {
+  move(step: number) {
     if (step >= 0 && this._steps > step) {
       this._currentStep = step
 
@@ -108,7 +123,9 @@ class Guide {
       }
 
       this._controller.updatePosition(step)
-      group.popover._addController(this._controller)
+      if (group.popover) {
+        group.popover._addController(this._controller)
+      }
 
       this._roller.highlight(group)
     }

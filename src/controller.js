@@ -1,3 +1,5 @@
+// @flow
+
 const {
   CONTROLLER_BORDER_TOP,
   CONTROLLER_PADDING_TOP,
@@ -15,41 +17,54 @@ const {
 } = require('./constants.js')
 const { stylify, toCamelCase } = require('./utils/helpers.js')
 
+type ControllerOptions = {
+  onSkip(event: Event): void,
+  onPrev(event: Event): void,
+  onNext(event: Event): void,
+  footerStyle?: { [key: string]: string | number },
+  skipButtonStyle?: { [key: string]: string | number },
+  prevButtonStyle?: { [key: string]: string | number },
+  nextButtonStyle?: { [key: string]: string | number },
+  doneButtonStyle?: { [key: string]: string | number },
+  skipButtonText: string,
+  prevButtonText: string,
+  nextButtonText: string,
+  doneButtonText: string,
+  steps: number,
+  currentStep: number
+}
+
 /** Class that add controls button to popover. Used in guides. */
 class Controller {
+  node: HTMLElement
+  _buttonStyle: { [string]: string | number }
+  _skipButton: HTMLButtonElement
+  _prevButton: HTMLButtonElement
+  _nextButton: HTMLButtonElement
+  _currentStep: number
+  _options: ControllerOptions
+
   /**
    * Creates instance of `Controller`. Parameter `options` defines listeners to all controls, styles to its controls and text for them.
    * Styles must be type of Strings and have valid CSS values.
-   * @param {Object} [options]
-   * @param {(buttons: { skip: HTMLButtonElement, prev: HTMLButtonElement, next: HTMLButtonElement }, event: Event) => void} options.onSkip
-   * @param {(buttons: { skip: HTMLButtonElement, prev: HTMLButtonElement, next: HTMLButtonElement }, event: Event) => void} options.onPrev
-   * @param {(buttons: { skip: HTMLButtonElement, prev: HTMLButtonElement, next: HTMLButtonElement }, event: Event) => void} options.onNext
-   * @param {{ [key: String]: String | Number | Boolean }} [options.footerStyle]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.skipButtonStyle]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.prevButtonStyle]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.nextButtonStyle]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.doneButtonStyle]
-   * @param {String} options.skipButtonText
-   * @param {String} options.prevButtonText
-   * @param {String} options.nextButtonText
-   * @param {String} options.doneButtonText
-   * @param {Number} options.steps
-   * @param {Number} options.currentStep
    */
-  constructor(options = {}) {
+  constructor(options: ControllerOptions = {}) {
     const footer = document.createElement('footer')
     const skipButton = document.createElement('button')
     const controlsDiv = document.createElement('div')
     const prevButton = document.createElement('button')
     const nextButton = document.createElement('button')
 
-    footer.setAttribute('style', stylify({
-      display: CONTROLLER_DISPLAY,
-      'justify-content': CONTROLLER_JUSTIFY_CONTENT,
-      'padding-top': CONTROLLER_PADDING_TOP,
-      'border-top': CONTROLLER_BORDER_TOP,
-      ...options.footerStyle
-    }))
+    footer.setAttribute(
+      'style',
+      stylify({
+        display: CONTROLLER_DISPLAY,
+        'justify-content': CONTROLLER_JUSTIFY_CONTENT,
+        'padding-top': CONTROLLER_PADDING_TOP,
+        'border-top': CONTROLLER_BORDER_TOP,
+        ...options.footerStyle
+      })
+    )
 
     controlsDiv.setAttribute('style', 'display: flex')
 
@@ -63,23 +78,32 @@ class Controller {
       'font-size': CONTROLLER_BUTTON_FONT_SIZE
     }
 
-    skipButton.setAttribute('style', stylify({
-      ...this._buttonStyle,
-      'margin-right': CONTROLLER_BUTTON_SKIP_MARGIN_RIGHT,
-      ...options.skipButtonStyle
-    }))
+    skipButton.setAttribute(
+      'style',
+      stylify({
+        ...this._buttonStyle,
+        'margin-right': CONTROLLER_BUTTON_SKIP_MARGIN_RIGHT,
+        ...options.skipButtonStyle
+      })
+    )
 
-    prevButton.setAttribute('style', stylify({
-      ...this._buttonStyle,
-      'margin-right': CONTROLLER_BUTTON_PREV_MARGIN_RIGHT,
-      ...options.prevButtonStyle
-    }))
+    prevButton.setAttribute(
+      'style',
+      stylify({
+        ...this._buttonStyle,
+        'margin-right': CONTROLLER_BUTTON_PREV_MARGIN_RIGHT,
+        ...options.prevButtonStyle
+      })
+    )
     disableButton(prevButton)
 
-    nextButton.setAttribute('style', stylify({
-      ...this._buttonStyle,
-      ...options.nextButtonStyle
-    }))
+    nextButton.setAttribute(
+      'style',
+      stylify({
+        ...this._buttonStyle,
+        ...options.nextButtonStyle
+      })
+    )
 
     skipButton.addEventListener('click', options.onSkip)
     skipButton.append(options.skipButtonText)
@@ -104,13 +128,13 @@ class Controller {
 
   /**
    * Update current step and repaint buttons.
-   * @param {Number} step
    */
-  updatePosition(step) {
+  updatePosition(step: number): void {
     this._currentStep = step
 
     step === 0
-      ? disableButton(this._prevButton) : enableButton(this._prevButton)
+      ? disableButton(this._prevButton)
+      : enableButton(this._prevButton)
 
     if (this._currentStep === this._options.steps - 1) {
       this._nextButton.innerText = this._options.doneButtonText
@@ -131,18 +155,16 @@ class Controller {
 
 /**
  * Disable button by CSS.
- * @param {HTMLButtonElement} element
  */
-function disableButton(element) {
+function disableButton(element: HTMLButtonElement) {
   element.setAttribute('disabled', 'true')
   element.style.cursor = 'not-allowed'
 }
 
 /**
  * Disable button by CSS.
- * @param {HTMLButtonElement} element
  */
-function enableButton(element) {
+function enableButton(element: HTMLButtonElement) {
   if (element.hasAttribute('disabled')) {
     element.removeAttribute('disabled')
     element.style.cursor = 'pointer'
@@ -150,14 +172,20 @@ function enableButton(element) {
 }
 
 /**
- *
- * @param {HTMLButtonElement} element
- * @param {{ [key: String]: String }} styles
+ * Change style of element.
  */
-function changeStylesOf(element, styles) {
+function changeStylesOf(
+  element: HTMLButtonElement,
+  styles: { [string]: string | number }
+) {
   const entry = Object.entries(styles)
   entry.forEach(([key, value]) => {
-    element.style[toCamelCase(key)] = `${value}`
+    if (
+      typeof value === 'string' ||
+      typeof value === 'number'
+    ) {
+      element.style.setProperty(toCamelCase(key), `${value}`)
+    }
   })
 }
 

@@ -1,3 +1,5 @@
+// @flow
+
 // eslint-disable-next-line no-unused-vars
 const Overlay = require('./group/overlay.js')
 // eslint-disable-next-line no-unused-vars
@@ -6,57 +8,59 @@ const Focus = require('./group/focus.js')
 const Popover = require('./group/popover.js')
 const { wait } = require('./utils/helpers.js')
 
+export type HighlightGroup = {
+  beforeInsert?: (wait: typeof wait) => Promise<void>,
+  overlay?: Overlay,
+  element: Focus,
+  popover?: Popover,
+  afterRemove?: (wait: typeof wait) => Promise<void>
+}
+
+type RollerOptions = {
+  onOverlayClick(group: HighlightGroup, event: MouseEvent): void
+}
+
 /**
  * Main class that can highlight one element.
  */
 class Roller {
+  _options: RollerOptions
+
   /**
    * Construct Roller instance.
    * By default `onOverlayClick` method removes (unhighlights) current group of elements from DOM.
-   * @param {{
-   *  onOverlayClick?: (group: {
-   *    beforeInsert?: () => void,
-   *    overlay?: Overlay,
-   *    element: Focus,
-   *    popover?: Popover,
-   *    afterRemove?: () => void
-   *  }, event: MouseEvent) => void
-   * }} [options]
    */
-  constructor(options = {}) {
+  constructor(options?: RollerOptions = {}) {
     this._options = {
-      onOverlayClick: options.onOverlayClick || ((group, event) => {
-        /** @type {HTMLElement} */
-        const target = event.target
+      onOverlayClick:
+        options.onOverlayClick ||
+        (async (group: HighlightGroup, event: MouseEvent) => {
+          const target = event.target
 
-        if (target.className === group.overlay.className) {
-          if (group.overlay) {
-            group.overlay.close()
-          }
-          group.element.cancel()
-          if (group.popover) {
-            group.popover.close()
-          }
+          if (target instanceof HTMLElement) {
+            if (
+              group.overlay &&
+              target.className === group.overlay.node.className
+            ) {
+              group.overlay.close()
+              group.element.cancel()
+              if (group.popover) {
+                group.popover.close()
+              }
 
-          if (group.afterRemove) {
-            group.afterRemove(wait)
+              if (group.afterRemove) {
+                await group.afterRemove(wait)
+              }
+            }
           }
-        }
-      })
+        })
     }
   }
 
   /**
    * Highlights element on the page.
-   * @param {{
-   *  beforeInsert?: (wait: (seconds: Number | String) => Promise<void>) => Promise<void>,
-   *  overlay?: Overlay,
-   *  element: Focus,
-   *  popover?: Popover,
-   *  (wait: (seconds: Number | String) => Promise<void>) => Promise<void>
-   * }} group
    */
-  async highlight(group) {
+  async highlight(group: HighlightGroup): Promise<void> {
     const { beforeInsert, overlay, popover, element } = group
 
     if (beforeInsert) {
@@ -65,30 +69,20 @@ class Roller {
 
     if (overlay) {
       overlay.show()
-    }
-    const htmlElement = await element.highlight()
-    if (popover) {
-      popover.show(htmlElement)
-    }
-
-    if (overlay) {
-      overlay.node.addEventListener('click', (event) => {
+      overlay.node.addEventListener('click', (event: MouseEvent) => {
         this._options.onOverlayClick(group, event)
       })
+    }
+    const htmlElement = await element.highlight()
+    if (popover && htmlElement) {
+      popover.show(htmlElement)
     }
   }
 
   /**
    * Manually remove highlight from element.
-   * @param {{
-    *  beforeInsert?: (wait: (seconds: Number | String) => Promise<void>) => Promise<void>,
-    *  overlay?: Overlay,
-    *  element: Focus,
-    *  popover?: Popover,
-    *  afterRemove?: (wait: (seconds: Number | String) => Promise<void>) => Promise<void>
-    * }} group
-    */
-  async unHighlight(group) {
+   */
+  async unHighlight(group: HighlightGroup): Promise<void> {
     if (group.overlay) {
       group.overlay.close()
     }

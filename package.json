@@ -1,15 +1,18 @@
 {
   "name": "@freelanco/roller",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Light asynchronous intro package.",
-  "main": "./index.js",
+  "main": "./dist/index.js",
   "homepage": "https://github.com/Freelanco-OU/roller",
   "bugs": {
     "url": "https://github.com/Freelanco-OU/roller/issues",
     "email": "kapelianovych.y.v@gmail.com"
   },
   "scripts": {
-    "test": "No test specified"
+    "test": "No test specified",
+    "flow:start": "./node_modules/.bin/flow",
+    "flow:stop": "./node_modules/.bin/flow stop",
+    "build": "./node_modules/.bin/flow-remove-types src/ -d dist/"
   },
   "keywords": [
     "intro",
@@ -25,11 +28,15 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^6.5.1",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.6.0",
     "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-flowtype": "^4.3.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "flow-bin": "^0.110.1",
+    "flow-remove-types": "^2.110.1"
   }
 }

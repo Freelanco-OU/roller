@@ -10,11 +10,11 @@ It is the main class that represent element that need to be highlighted. It take
 const focus = new Focus('.some-class', {
   async beforeHighlight(wait) {
     // some code
-    // `wait` function is used if code must wait for some time
+    // `wait` asynchronous function is used if code must wait for some time
   },
   async afterHighlight(wait) {
     // some code
-    // `wait` function is used if code must wait for some time
+    // `wait` asynchronous function is used if code must wait for some time
   }
 })
 // or
@@ -29,6 +29,7 @@ This class represents overlay on the page. You can set your own initial styles f
 ```javascript
 const overlay = new Overlay({
   initialStyles: {
+    'background-color': 'rgb(234, 54, 95)'
     // you must write valid CSS expressions in kebab-case
   },
   opacity: 0.75, // default
@@ -67,11 +68,11 @@ const roller = new Roller({
   }
 })
 roller.highlight({
-  async beforeInsert() {}, // executes before roller starts highlight element.
+  async beforeInsert(wait) {}, // executes before roller starts highlight element.
   new Overlay(/* options */),
   new Focus(/* options */),
   new Popover(/* options */),
-  async afterRemove() {}, // executes after roller ends highlight and removes above elements from DOM.
+  async afterRemove(wait) {}, // executes after roller ends highlight and removes above elements from DOM.
 })
 ```
 

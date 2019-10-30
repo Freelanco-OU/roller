@@ -1,3 +1,5 @@
+// @flow
+
 const {
   OVERLAY_Z_INDEX,
   OVERLAY_POSITION,
@@ -12,16 +14,24 @@ const {
 } = require('../constants.js')
 const { stylify } = require('../utils/helpers.js')
 
+type OverlayOptions = {
+  initialStyles: { [key: string]: string | number },
+  opacity?: number,
+  isolateClickEvents?: boolean
+}
+
 /** Represents overlay on the page. */
 class Overlay {
+  _opacity: string
+  +node: HTMLDivElement
+
   /**
    * Construct overlay node.
-   * @param {Object} [options]
-   * @param {{ [key: String]: String | Number | Boolean }} [options.initialStyles] Initial style for overlay object.
-   * @param {Number} [options.opacity=0.75] Desired opacity for overlay object. By default it equals to `0.75`.
-   * @param {Boolean} [options.isolateClickEvents] Isolates *click* events from bubbling out of the overlay.
+   * `initialStyles` - Initial style for overlay object.
+   * `opacity` - Desired opacity for overlay object. By default it equals to `0.75`.
+   * `isolateClickEvents` - Isolates *click* events from bubbling out of the overlay.
    */
-  constructor(options = {}) {
+  constructor(options?: OverlayOptions = {}) {
     const overlay = document.createElement('div')
     overlay.classList.add('roller-overlay')
 
@@ -40,16 +50,23 @@ class Overlay {
 
     // Don't propagate event to outer elements, except of highlighted element.
     if (options.isolateClickEvents) {
-      overlay.addEventListener('click', (event) => { event.stopPropagation() })
+      overlay.addEventListener('click', (event: MouseEvent) => { event.stopPropagation() })
     }
 
-    this._opacity = options.opacity || `${OVERLAY_VISIBLE_OPACITY}`
+    if (typeof options.opacity === 'number') {
+      this._opacity = `${options.opacity}`
+    } else {
+      this._opacity = `${OVERLAY_VISIBLE_OPACITY}`
+    }
+
     this.node = overlay
   }
 
   /** Shows overlay on the page. */
   show() {
-    document.body.append(this.node)
+    if (document.body) {
+      document.body.append(this.node)
+    }
 
     requestAnimationFrame(() => {
       this.node.style.opacity = this._opacity

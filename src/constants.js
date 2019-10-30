@@ -1,3 +1,5 @@
+// @flow
+
 /** Defines all constants for the package. */
 module.exports = {
   ELEMENT_Z_INDEX: 1000000000,
@@ -29,7 +31,7 @@ module.exports = {
   POPOVER_TITLE_FONT_SIZE: '1.4rem',
   POPOVER_TITLE_TEXT_ALIGN: 'justify',
   POPOVER_TITLE_LINE_HEIGHT: 1.1,
-  POPOVER_DESCRIPTION_MARGIN: 0,
+  POPOVER_DESCRIPTION_MARGIN: '0 0 .5em 0',
   POPOVER_DESCRIPTION_FONT_SIZE: '1rem',
   POPOVER_DESCRIPTION_LINE_HEIGHT: 1.3,
 
