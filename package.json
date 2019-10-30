@@ -12,7 +12,9 @@
     "test": "No test specified",
     "flow:start": "./node_modules/.bin/flow",
     "flow:stop": "./node_modules/.bin/flow stop",
-    "build": "./node_modules/.bin/flow-remove-types src/ -d dist/"
+    "build": "./node_modules/.bin/flow-remove-types src/ -d dist/",
+    "prepublish": "npm run build; git checkout master; git merge develop",
+    "postpublish": "git checkout develop"
   },
   "keywords": [
     "intro",
