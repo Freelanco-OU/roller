@@ -88,6 +88,8 @@ class Popover {
     popover.append(title)
 
     if (options.description) {
+      const descriptionText = options.description
+
       const description = document.createElement('p')
       description.setAttribute('style', stylify({
         margin: POPOVER_DESCRIPTION_MARGIN,
@@ -95,9 +97,7 @@ class Popover {
         'line-height': POPOVER_DESCRIPTION_LINE_HEIGHT,
         ...descriptionStyles
       }))
-      if (options.description) {
-        description.append(options.description)
-      }
+      description.append(descriptionText)
       popover.append(description)
     }
 
