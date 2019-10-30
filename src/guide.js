@@ -1,7 +1,6 @@
 // @flow
 
 import type { HighlightGroup } from './roller.js'
-import typeof { wait } from './utils/helpers.js'
 
 const Controller = require('./controller.js')
 // eslint-disable-next-line no-unused-vars
@@ -11,6 +10,7 @@ const Focus = require('./group/focus.js')
 // eslint-disable-next-line no-unused-vars
 const Popover = require('./group/popover.js')
 const Roller = require('./roller.js')
+const Tip = require('./tip.js')
 
 type GuideControllerOptions = {
   skipButtonText?: string,
@@ -27,6 +27,7 @@ type GuideControllerOptions = {
 type GuideOptions = {
   groups: HighlightGroup[],
   overlay?: Overlay,
+  buildTip?: (start: () => void, close: () => void) => Tip,
   onDone?: () => void,
   onSkip?: () => void
 }
@@ -41,6 +42,7 @@ class Guide {
   _onSkip: ?(() => void)
   _controller: Controller
   _roller: Roller
+  _tip: ?Tip
 
   /**
    * Defines `options` for *Guide* object.
@@ -55,6 +57,9 @@ class Guide {
     this._overlay = options.overlay || new Overlay()
     this._onDone = options.onDone
     this._onSkip = options.onSkip
+    if (options.buildTip) {
+      this._tip = options.buildTip(() => this.move(0), () => this.cancel())
+    }
   }
 
   /**
@@ -133,7 +138,11 @@ class Guide {
 
   /** Starts guide. */
   start() {
-    this.move(0)
+    if (this._tip) {
+      this._tip.show()
+    } else {
+      this.move(0)
+    }
   }
 
   /** Cancel guide. */
