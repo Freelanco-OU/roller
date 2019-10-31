@@ -13,5 +13,5 @@ module.exports = {
   Popover,
   Overlay,
   Guide,
-  Tip
+  Tip,
 }
