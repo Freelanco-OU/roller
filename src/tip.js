@@ -30,7 +30,11 @@ const {
 const { stylify } = require('./utils/helpers.js')
 
 type TipOptions = {
-  position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left' | 'center',
+  position?: | 'top-right'
+    | 'bottom-right'
+    | 'top-left'
+    | 'bottom-left'
+    | 'center',
   tipStyles?: { [string]: string | number },
   descriptionStyles?: { [string]: string | number },
   closeButtonStyles?: { [string]: string | number },
@@ -47,7 +51,9 @@ class Tip {
   node: HTMLElement
 
   constructor(options: TipOptions) {
-    const defaultButtonEventHandler = (event: MouseEvent) => { this.close() }
+    const defaultButtonEventHandler = (event: MouseEvent) => {
+      this.close()
+    }
 
     const tipStyles = options.tipStyles || {}
     const descriptionStyles = options.descriptionStyles || {}
@@ -60,65 +66,84 @@ class Tip {
 
     const tip = document.createElement('aside')
     tip.classList.add('roller-tip')
-    tip.setAttribute('style', stylify({
-      padding: TIP_PADDING,
-      position: TIP_POSITION,
-      'border-radius': TIP_BORDER_RADIUS,
-      'background-color': TIP_BACKGROUND_COLOR,
-      transition: TIP_TRANSITION,
-      opacity: TIP_OPACITY,
-      'max-width': TIP_MAX_WIDTH,
-      'z-index': TIP_Z_INDEX,
-      ...tipStyles
-    }))
+    tip.setAttribute(
+      'style',
+      stylify({
+        padding: TIP_PADDING,
+        position: TIP_POSITION,
+        'border-radius': TIP_BORDER_RADIUS,
+        'background-color': TIP_BACKGROUND_COLOR,
+        transition: TIP_TRANSITION,
+        opacity: TIP_OPACITY,
+        'max-width': TIP_MAX_WIDTH,
+        'z-index': TIP_Z_INDEX,
+        // $FlowFixMe
+        ...tipStyles
+      })
+    )
 
     const description = document.createElement('p')
     description.classList.add('roller-tip-description')
-    description.setAttribute('style', stylify({
-      margin: TIP_DESCRIPTION_MARGIN,
-      'font-size': TIP_DESCRIPTION_FONT_SIZE,
-      'line-height': TIP_DESCRIPTION_LINE_HEIGHT,
-      'text-align': TIP_DESCRIPTION_TEXT_ALIGN,
-      ...descriptionStyles
-    }))
+    description.setAttribute(
+      'style',
+      stylify({
+        margin: TIP_DESCRIPTION_MARGIN,
+        'font-size': TIP_DESCRIPTION_FONT_SIZE,
+        'line-height': TIP_DESCRIPTION_LINE_HEIGHT,
+        'text-align': TIP_DESCRIPTION_TEXT_ALIGN,
+        // $FlowFixMe
+        ...descriptionStyles
+      })
+    )
     description.append(options.descriptionText)
     tip.append(description)
 
     // Start block of buttons
     const buttonsBlock = document.createElement('div')
-    buttonsBlock.setAttribute('style', stylify({
-      display: 'flex',
-      'justify-content': 'flex-end'
-    }))
+    buttonsBlock.setAttribute(
+      'style',
+      stylify({
+        display: 'flex',
+        'justify-content': 'flex-end'
+      })
+    )
 
     const closeButton = document.createElement('button')
     closeButton.classList.add('roller-tip-close-button')
-    closeButton.setAttribute('style', stylify({
-      margin: TIP_CLOSE_BUTTON_MARGIN,
-      padding: TIP_CLOSE_BUTTON_PADDING,
-      outline: TIP_BUTTON_OUTLINE,
-      'background-color': TIP_CLOSE_BUTTON_BACKGROUND_COLOR,
-      border: TIP_CLOSE_BUTTON_BORDER,
-      'border-radius': TIP_CLOSE_BUTTON_BORDER_RADIUS,
-      'font-size': TIP_BUTTON_FONT_SIZE,
-      color: TIP_CLOSE_BUTTON_COLOR,
-      ...closeButtonStyles
-    }))
+    closeButton.setAttribute(
+      'style',
+      stylify({
+        margin: TIP_CLOSE_BUTTON_MARGIN,
+        padding: TIP_CLOSE_BUTTON_PADDING,
+        outline: TIP_BUTTON_OUTLINE,
+        'background-color': TIP_CLOSE_BUTTON_BACKGROUND_COLOR,
+        border: TIP_CLOSE_BUTTON_BORDER,
+        'border-radius': TIP_CLOSE_BUTTON_BORDER_RADIUS,
+        'font-size': TIP_BUTTON_FONT_SIZE,
+        color: TIP_CLOSE_BUTTON_COLOR,
+        // $FlowFixMe
+        ...closeButtonStyles
+      })
+    )
     closeButton.append(closeButtonText)
     closeButton.addEventListener('click', onClose)
 
     const okButton = document.createElement('button')
     okButton.classList.add('roller-tip-ok-button')
-    okButton.setAttribute('style', stylify({
-      margin: TIP_BUTTON_MARGIN,
-      padding: TIP_OK_BUTTON_PADDING,
-      outline: TIP_BUTTON_OUTLINE,
-      'background-color': TIP_OK_BUTTON_BACKGROUND_COLOR,
-      border: TIP_OK_BUTTON_BORDER,
-      'border-radius': TIP_OK_BUTTON_BORDER_RADIUS,
-      'font-size': TIP_BUTTON_FONT_SIZE,
-      ...okButtonStyles
-    }))
+    okButton.setAttribute(
+      'style',
+      stylify({
+        margin: TIP_BUTTON_MARGIN,
+        padding: TIP_OK_BUTTON_PADDING,
+        outline: TIP_BUTTON_OUTLINE,
+        'background-color': TIP_OK_BUTTON_BACKGROUND_COLOR,
+        border: TIP_OK_BUTTON_BORDER,
+        'border-radius': TIP_OK_BUTTON_BORDER_RADIUS,
+        'font-size': TIP_BUTTON_FONT_SIZE,
+        // $FlowFixMe
+        ...okButtonStyles
+      })
+    )
     okButton.append(okButtonText)
     okButton.addEventListener('click', onOk)
 

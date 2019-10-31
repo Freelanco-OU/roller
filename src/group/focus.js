@@ -4,13 +4,13 @@ const {
   ELEMENT_Z_INDEX,
   ELEMENT_TRANSITION,
   ELEMENT_POSITION,
-  ELEMENT_BACKGROUND_COLOR,
+  ELEMENT_BACKGROUND_COLOR
 } = require('../constants.js')
-const { wait, } = require('../utils/helpers.js')
+const { wait } = require('../utils/helpers.js')
 
 type FocusOptions = {
   beforeHighlight?: (node: HTMLElement, wait: typeof wait) => Promise<void>,
-  afterHighlight?: (node: HTMLElement, wait: typeof wait) => Promise<void>,
+  afterHighlight?: (node: HTMLElement, wait: typeof wait) => Promise<void>
 }
 
 /**

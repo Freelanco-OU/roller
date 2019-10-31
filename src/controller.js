@@ -62,6 +62,7 @@ class Controller {
         'justify-content': CONTROLLER_JUSTIFY_CONTENT,
         'padding-top': CONTROLLER_PADDING_TOP,
         'border-top': CONTROLLER_BORDER_TOP,
+        // $FlowFixMe
         ...options.footerStyle
       })
     )
@@ -83,6 +84,7 @@ class Controller {
       stylify({
         ...this._buttonStyle,
         'margin-right': CONTROLLER_BUTTON_SKIP_MARGIN_RIGHT,
+        // $FlowFixMe
         ...options.skipButtonStyle
       })
     )
@@ -92,6 +94,7 @@ class Controller {
       stylify({
         ...this._buttonStyle,
         'margin-right': CONTROLLER_BUTTON_PREV_MARGIN_RIGHT,
+        // $FlowFixMe
         ...options.prevButtonStyle
       })
     )
@@ -101,6 +104,7 @@ class Controller {
       'style',
       stylify({
         ...this._buttonStyle,
+        // $FlowFixMe
         ...options.nextButtonStyle
       })
     )
@@ -147,6 +151,7 @@ class Controller {
       const nextButtonStyles = this._options.nextButtonStyle
       changeStylesOf(this._nextButton, {
         ...commonButtonStyles,
+        // $FlowFixMe
         ...nextButtonStyles
       })
     }
@@ -180,10 +185,7 @@ function changeStylesOf(
 ) {
   const entry = Object.entries(styles)
   entry.forEach(([key, value]) => {
-    if (
-      typeof value === 'string' ||
-      typeof value === 'number'
-    ) {
+    if (typeof value === 'string' || typeof value === 'number') {
       element.style.setProperty(toCamelCase(key), `${value}`)
     }
   })

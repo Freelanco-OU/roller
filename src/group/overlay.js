@@ -15,7 +15,7 @@ const {
 const { stylify } = require('../utils/helpers.js')
 
 type OverlayOptions = {
-  initialStyles: { [key: string]: string | number },
+  initialStyles: { [string]: string | number },
   opacity?: number,
   isolateClickEvents?: boolean
 }
@@ -35,22 +35,28 @@ class Overlay {
     const overlay = document.createElement('div')
     overlay.classList.add('roller-overlay')
 
-    overlay.setAttribute('style', stylify({
-      position: OVERLAY_POSITION,
-      transition: OVERLAY_TRANSITION,
-      top: OVERLAY_TOP,
-      bottom: OVERLAY_BOTTOM,
-      left: OVERLAY_LEFT,
-      right: OVERLAY_RIGHT,
-      opacity: OVERLAY_OPACITY,
-      'background-color': OVERLAY_BACKGROUND_COLOR,
-      'z-index': OVERLAY_Z_INDEX,
-      ...options.initialStyles
-    }))
+    overlay.setAttribute(
+      'style',
+      stylify({
+        position: OVERLAY_POSITION,
+        transition: OVERLAY_TRANSITION,
+        top: OVERLAY_TOP,
+        bottom: OVERLAY_BOTTOM,
+        left: OVERLAY_LEFT,
+        right: OVERLAY_RIGHT,
+        opacity: OVERLAY_OPACITY,
+        'background-color': OVERLAY_BACKGROUND_COLOR,
+        'z-index': OVERLAY_Z_INDEX,
+        // $FlowFixMe
+        ...options.initialStyles
+      })
+    )
 
     // Don't propagate event to outer elements, except of highlighted element.
     if (options.isolateClickEvents) {
-      overlay.addEventListener('click', (event: MouseEvent) => { event.stopPropagation() })
+      overlay.addEventListener('click', (event: MouseEvent) => {
+        event.stopPropagation()
+      })
     }
 
     if (typeof options.opacity === 'number') {

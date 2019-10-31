@@ -9,7 +9,7 @@ type AnimateOptions = {
 
 type Styles =
   | {
-      [key: string]: string | number | boolean
+      [string]: string | number
     }
   | string
 
