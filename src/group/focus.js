@@ -6,7 +6,7 @@ const {
   ELEMENT_POSITION,
   ELEMENT_BACKGROUND_COLOR
 } = require('../constants.js')
-const { wait } = require('../utils/helpers.js')
+const { wait, animate } = require('../utils/helpers.js')
 
 type FocusOptions = {
   beforeHighlight?: (node: HTMLElement, wait: typeof wait) => Promise<void>,
@@ -87,8 +87,26 @@ class Focus {
   cancel() {
     const node = this.node
 
-    node.removeAttribute('style')
-    node.classList.remove('roller-highlighted-element')
+    const transitionDuration = parseFloat(node.style.transitionDuration)
+    const transition = node.style.transition
+
+    // Disable transition for proper animation
+    node.style.transition = 'unset'
+
+    animate({
+      duration: transitionDuration,
+      timing(time) {
+        return 1 - time ** 2
+      },
+      draw(progress) {
+        node.style.opacity = progress.toPrecision(3)
+      },
+      onEnd() {
+        node.removeAttribute('style')
+        node.classList.remove('roller-highlighted-element')
+        node.style.transition = transition
+      }
+    })
   }
 }
 

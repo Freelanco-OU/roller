@@ -27,7 +27,7 @@ const {
   TIP_CLOSE_BUTTON_COLOR,
   TIP_CLOSE_BUTTON_MARGIN
 } = require('./constants.js')
-const { stylify } = require('./utils/helpers.js')
+const { stylify, animate } = require('./utils/helpers.js')
 
 type TipOptions = {
   position?: | 'top-right'
@@ -165,7 +165,25 @@ class Tip {
 
   /** Closes tip. */
   close(): void {
-    this.node.remove()
+    const node = this.node
+
+    const transitionDuration = parseFloat(node.style.transitionDuration)
+
+    // Disable transition for proper animation
+    node.style.transition = 'unset'
+
+    animate({
+      duration: transitionDuration,
+      timing(time) {
+        return 1 - time ** 2
+      },
+      draw(progress) {
+        node.style.opacity = progress.toPrecision(3)
+      },
+      onEnd() {
+        node.remove()
+      }
+    })
   }
 }
 

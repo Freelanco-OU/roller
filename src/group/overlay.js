@@ -12,7 +12,7 @@ const {
   OVERLAY_RIGHT,
   OVERLAY_TOP
 } = require('../constants.js')
-const { stylify } = require('../utils/helpers.js')
+const { stylify, animate } = require('../utils/helpers.js')
 
 type OverlayOptions = {
   initialStyles: { [string]: string | number },
@@ -81,10 +81,29 @@ class Overlay {
 
   /** Closes this overlay. */
   close() {
-    requestAnimationFrame(() => {
-      this.node.style.opacity = '0'
+    const node = this.node
+
+    const transitionDuration = parseFloat(node.style.transitionDuration)
+    const opacity = parseFloat(node.style.opacity)
+
+    // Disable transition for proper animation
+    node.style.transition = 'unset'
+
+    animate({
+      duration: transitionDuration,
+      timing(time) {
+        const exp = time ** 2
+        return opacity > exp
+          ? opacity - exp
+          : 0
+      },
+      draw(progress) {
+        node.style.opacity = progress.toPrecision(3)
+      },
+      onEnd() {
+        node.remove()
+      }
     })
-    this.node.remove()
   }
 }
 

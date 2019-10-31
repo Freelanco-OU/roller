@@ -20,7 +20,7 @@ const {
 } = require('../constants.js')
 // eslint-disable-next-line no-unused-vars
 const Controller = require('../controller.js')
-const { stylify } = require('../utils/helpers.js')
+const { stylify, animate } = require('../utils/helpers.js')
 
 type PopoverPosition = 'top' | 'bottom' | 'left' | 'right' | 'auto'
 
@@ -72,6 +72,7 @@ class Popover {
       opacity: POPOVER_OPACITY,
       'max-width': POPOVER_MAX_WIDTH,
       'z-index': POPOVER_Z_INDEX,
+      // $FlowFixMe
       ...popoverStyles
     }))
     popover.classList.add('roller-popover')
@@ -82,6 +83,7 @@ class Popover {
       'font-size': POPOVER_TITLE_FONT_SIZE,
       'line-height': POPOVER_TITLE_LINE_HEIGHT,
       'text-align': POPOVER_TITLE_TEXT_ALIGN,
+      // $FlowFixMe
       ...titleStyles
     }))
     title.append(options.title)
@@ -95,6 +97,7 @@ class Popover {
         margin: POPOVER_DESCRIPTION_MARGIN,
         'font-size': POPOVER_DESCRIPTION_FONT_SIZE,
         'line-height': POPOVER_DESCRIPTION_LINE_HEIGHT,
+        // $FlowFixMe
         ...descriptionStyles
       }))
       description.append(descriptionText)
@@ -142,8 +145,26 @@ class Popover {
 
   /** Closes this popover. */
   close() {
-    this.node.remove()
-    window.removeEventListener('resize', this._onResize)
+    const node = this.node
+
+    const transitionDuration = parseFloat(node.style.transitionDuration)
+
+    // Disable transition for proper animation
+    node.style.transition = 'unset'
+
+    animate({
+      duration: transitionDuration,
+      timing(time) {
+        return 1 - time ** 2
+      },
+      draw(progress) {
+        node.style.opacity = progress.toPrecision(3)
+      },
+      onEnd() {
+        node.remove()
+        window.removeEventListener('resize', this._onResize)
+      }
+    })
   }
 
   /**

@@ -3,7 +3,7 @@
 type AnimateOptions = {
   duration: number,
   timing(timeFraction: number): number,
-  draw(progress: number): number,
+  draw(progress: number): void,
   onEnd?: () => void
 }
 
