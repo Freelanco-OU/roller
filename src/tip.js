@@ -202,6 +202,8 @@ class Tip {
       },
       onEnd() {
         node.remove()
+        // Resets opacity if tip will be reshowed.
+        node.style.opacity = '0'
       }
     })
   }
