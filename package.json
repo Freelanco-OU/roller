@@ -13,7 +13,7 @@
     "flow:start": "./node_modules/.bin/flow",
     "flow:stop": "./node_modules/.bin/flow stop",
     "build": "./node_modules/.bin/flow-remove-types src/ -d dist/",
-    "prepublish": "npm run build; git checkout master; git merge develop",
+    "prepublish": "npm run build; git push origin develop; git checkout master; git merge develop; git push origin master",
     "postpublish": "git checkout develop"
   },
   "keywords": [
