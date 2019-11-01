@@ -1,4 +1,8 @@
-# 0.2.1
+# 0.2.2
+
+- Fix opacity of tip if it will be reshowed.
+
+## 0.2.1
 
 - Fix bug with tip's `box-shadow` bug.
 
