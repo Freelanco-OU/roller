@@ -39,7 +39,6 @@ class Overlay {
       'style',
       stylify({
         position: OVERLAY_POSITION,
-        transition: OVERLAY_TRANSITION,
         top: OVERLAY_TOP,
         bottom: OVERLAY_BOTTOM,
         left: OVERLAY_LEFT,
@@ -70,6 +69,9 @@ class Overlay {
 
   /** Shows overlay on the page. */
   show() {
+    // Sets and restore transition if user return to previous step.
+    this.node.style.transition = `${OVERLAY_TRANSITION}` // TODO: fix transition from initialStyles
+
     if (document.body) {
       document.body.append(this.node)
     }

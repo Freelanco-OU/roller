@@ -68,7 +68,6 @@ class Popover {
       padding: POPOVER_PADDING,
       'border-radius': POPOVER_BORDER_RADIUS,
       'background-color': POPOVER_BACKGROUND_COLOR,
-      transition: POPOVER_TRANSITION,
       opacity: POPOVER_OPACITY,
       'max-width': POPOVER_MAX_WIDTH,
       'z-index': POPOVER_Z_INDEX,
@@ -123,6 +122,9 @@ class Popover {
    * Construct and show popover near highlighted element.
    */
   show(element: HTMLElement) {
+    // Sets and restore transition if user return to previous step.
+    this.node.style.transition = `${POPOVER_TRANSITION}` // TODO: fix transition from popoverStyles
+
     if (document.body) {
       document.body.append(this.node)
     }
