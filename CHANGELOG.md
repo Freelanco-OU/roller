@@ -2,7 +2,10 @@
 
 - Transfer codebase to Flow.
 - Fix `margin-bottom` of description in *popover*.
-- Small edits of README.
+- Add `Tip` class to the package.
+- Add closing animation to `Tip`, `Focus`, `Overlay` and `Popover`.
+- Add some config files.
+- Edit README.
 
 ## 0.1.0
 

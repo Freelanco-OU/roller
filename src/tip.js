@@ -25,21 +25,24 @@ const {
   TIP_CLOSE_BUTTON_BACKGROUND_COLOR,
   TIP_CLOSE_BUTTON_PADDING,
   TIP_CLOSE_BUTTON_COLOR,
-  TIP_CLOSE_BUTTON_MARGIN
+  TIP_CLOSE_BUTTON_MARGIN,
+  TIP_BOX_SHADOW
 } = require('./constants.js')
 const { stylify, animate } = require('./utils/helpers.js')
 
-type TipOptions = {
-  position?: | 'top-right'
+type TipPosition = | 'top-right'
     | 'bottom-right'
     | 'top-left'
     | 'bottom-left'
-    | 'center',
+    | 'center'
+
+type TipOptions = {
+  position?: TipPosition,
   tipStyles?: { [string]: string | number },
   descriptionStyles?: { [string]: string | number },
   closeButtonStyles?: { [string]: string | number },
   okButtonStyles?: { [string]: string | number },
-  descriptionText: string,
+  text: string,
   okButtonText?: string,
   closeButtonText?: string,
   onClose?: (event: MouseEvent) => void,
@@ -49,6 +52,7 @@ type TipOptions = {
 /** Describes tip on the page. */
 class Tip {
   node: HTMLElement
+  position: TipPosition
 
   constructor(options: TipOptions) {
     const defaultButtonEventHandler = (event: MouseEvent) => {
@@ -73,10 +77,10 @@ class Tip {
         position: TIP_POSITION,
         'border-radius': TIP_BORDER_RADIUS,
         'background-color': TIP_BACKGROUND_COLOR,
-        transition: TIP_TRANSITION,
-        opacity: TIP_OPACITY,
+        opacity: 0,
         'max-width': TIP_MAX_WIDTH,
         'z-index': TIP_Z_INDEX,
+        'box-shadow': TIP_BOX_SHADOW,
         // $FlowFixMe
         ...tipStyles
       })
@@ -95,7 +99,7 @@ class Tip {
         ...descriptionStyles
       })
     )
-    description.append(options.descriptionText)
+    description.append(options.text)
     tip.append(description)
 
     // Start block of buttons
@@ -104,7 +108,7 @@ class Tip {
       'style',
       stylify({
         display: 'flex',
-        'justify-content': 'flex-end'
+        'justify-content': 'space-between'
       })
     )
 
@@ -153,13 +157,23 @@ class Tip {
     // End block of buttons
     tip.append(buttonsBlock)
 
+    this.position = options.position || 'top-right'
+    setTipPosition(tip, this.position)
     this.node = tip
   }
 
   /** Shows tip. */
   show(): void {
     if (document.body) {
+      // Sets and restore transition if user return to previous step.
+      this.node.style.transition = `${TIP_TRANSITION}` // TODO: fix transition from initialStyles
+
       document.body.append(this.node)
+
+      requestAnimationFrame(() => {
+        this.node.style.opacity = `${TIP_OPACITY}`
+        setTipPosition(this.node, this.position, false)
+      })
     }
   }
 
@@ -184,6 +198,37 @@ class Tip {
         node.remove()
       }
     })
+  }
+}
+
+function setTipPosition(
+  tip: HTMLElement,
+  position: TipPosition,
+  initial? = true
+) {
+  switch (position) {
+    case 'top-left':
+      tip.style.top = '1em'
+      tip.style.left = initial ? '0' : '1em'
+      break
+    case 'bottom-right':
+      tip.style.bottom = '1em'
+      tip.style.right = initial ? '0' : '1em'
+      break
+    case 'bottom-left':
+      tip.style.bottom = '1em'
+      tip.style.left = initial ? '0' : '1em'
+      break
+    case 'center':
+      tip.style.top = '50%'
+      tip.style.left = '50%'
+      tip.style.transform = initial
+        ? 'translate(-50%, 0)'
+        : 'translate(-50%, -50%)'
+      break
+    default:
+      tip.style.top = '1em'
+      tip.style.right = initial ? '0' : '1em'
   }
 }
 
