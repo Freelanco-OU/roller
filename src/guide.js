@@ -142,6 +142,10 @@ class Guide {
   cancel() {
     const group = this._groups[this._currentStep]
     this._roller.unHighlight(group)
+    if (this._currentStep === this._steps - 1) {
+      this._overlay.close()
+      this._isGlobalOverlayShowed = false
+    }
   }
 }
 
