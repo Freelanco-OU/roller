@@ -80,8 +80,10 @@ class Guide {
       onNext: (event) => {
         this.cancel()
 
-        if (this._currentStep === this._groups.length - 1 && this._onDone) {
+        if (this._currentStep === this._steps - 1 && this._onDone) {
           this._onDone()
+          this._overlay.close()
+          this._isGlobalOverlayShowed = false
         } else {
           this.move(++this._currentStep)
         }
@@ -142,10 +144,6 @@ class Guide {
   cancel() {
     const group = this._groups[this._currentStep]
     this._roller.unHighlight(group)
-    if (this._currentStep === this._steps - 1) {
-      this._overlay.close()
-      this._isGlobalOverlayShowed = false
-    }
   }
 }
 
