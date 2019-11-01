@@ -10,7 +10,6 @@ const Focus = require('./group/focus.js')
 // eslint-disable-next-line no-unused-vars
 const Popover = require('./group/popover.js')
 const Roller = require('./roller.js')
-const Tip = require('./tip.js')
 
 type GuideControllerOptions = {
   skipButtonText?: string,
@@ -27,7 +26,6 @@ type GuideControllerOptions = {
 type GuideOptions = {
   groups: HighlightGroup[],
   overlay?: Overlay,
-  buildTip?: (start: () => void, close: () => void) => Tip,
   onDone?: () => void,
   onSkip?: () => void
 }
@@ -42,7 +40,7 @@ class Guide {
   _onSkip: ?(() => void)
   _controller: Controller
   _roller: Roller
-  _tip: ?Tip
+  _isGlobalOverlayShowed: boolean
 
   /**
    * Defines `options` for *Guide* object.
@@ -57,9 +55,7 @@ class Guide {
     this._overlay = options.overlay || new Overlay()
     this._onDone = options.onDone
     this._onSkip = options.onSkip
-    if (options.buildTip) {
-      this._tip = options.buildTip(() => this.move(0), () => this.cancel())
-    }
+    this._isGlobalOverlayShowed = false
   }
 
   /**
@@ -118,13 +114,14 @@ class Guide {
     if (step >= 0 && this._steps > step) {
       this._currentStep = step
 
-      const group = this._groups[step]
-      if (!group.overlay) {
-        // Set global overlay on start. It is used for making hight contrast with highlighted element.
-        if (this._currentStep === 0) {
-          group.overlay = this._overlay
-        }
-        group.overlay = this._overlay
+      const group = this._groups[this._currentStep]
+      if (!group.overlay && !this._isGlobalOverlayShowed) {
+        // Show global overlay if there isn't local one.
+        this._overlay.show()
+        this._isGlobalOverlayShowed = true
+      } else if (group.overlay && this._isGlobalOverlayShowed) {
+        this._overlay.close()
+        this._isGlobalOverlayShowed = false
       }
 
       this._controller.updatePosition(step)
@@ -138,11 +135,7 @@ class Guide {
 
   /** Starts guide. */
   start() {
-    if (this._tip) {
-      this._tip.show()
-    } else {
-      this.move(0)
-    }
+    this.move(0)
   }
 
   /** Cancel guide. */
