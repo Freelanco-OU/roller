@@ -55,18 +55,24 @@ class Tip {
   position: TipPosition
 
   constructor(options: TipOptions) {
-    const defaultButtonEventHandler = (event: MouseEvent) => {
-      this.close()
-    }
-
     const tipStyles = options.tipStyles || {}
     const descriptionStyles = options.descriptionStyles || {}
     const closeButtonStyles = options.closeButtonStyles || {}
     const okButtonStyles = options.okButtonStyles || {}
     const closeButtonText = options.closeButtonText || 'Close'
     const okButtonText = options.okButtonText || 'OK'
-    const onClose = options.onClose || defaultButtonEventHandler
-    const onOk = options.onOk || defaultButtonEventHandler
+    const onClose = (event: MouseEvent) => {
+      if (options.onClose) {
+        options.onClose(event)
+      }
+      this.close()
+    }
+    const onOk = (event: MouseEvent) => {
+      if (options.onOk) {
+        options.onOk(event)
+      }
+      this.close()
+    }
 
     const tip = document.createElement('aside')
     tip.classList.add('roller-tip')
