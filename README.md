@@ -1,6 +1,6 @@
 # Roller - a gorgeous intro package
 
-The package exports five classes: `Roller`, `Guide`, `Overlay`, `Popover` and `Focus`.
+The package exports six classes: `Roller`, `Guide`, `Overlay`, `Popover`, `Focus` and `Tip`.
 
 ## Focus
 
@@ -97,13 +97,37 @@ After you create `Guide`, you must call `configure()` method of it. It is needed
 
 ```javascript
 guide.configure({
-  skipButtonText: 'Skip',
+  skipButtonText: 'Skip', // default
   // ...
   skipButtonStyles: {
     // ...
   }
 })
 .start() // Starts guide.
+```
+
+## Tip
+
+This class represents tip on the page. It isn't attached to element on the page, but is positioned according to window.
+
+```javascript
+const tip = new Tip({
+  // Set position of the tip
+  position: 'bottom-right' | 'top-left' | 'bottom-left' | 'center' | 'top-right'(default),
+  tipStyles: { ... },
+  descriptionStyles: { ... },
+  closeButtonStyles: { ... },
+  okButtonStyles: { ... },
+  text: 'Some text here',
+  okButtonText: 'OK', // default
+  closeButtonText: 'Close', // default
+  onClose(event) {
+    // Invokes on closing tip
+  },
+  onOk(event) {
+    // Invokes on clicking OK
+  }
+})
 ```
 
 ### Other
