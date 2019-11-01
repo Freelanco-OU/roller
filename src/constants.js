@@ -57,7 +57,7 @@ module.exports = {
   TIP_OPACITY: 1,
   TIP_MAX_WIDTH: '300px',
   TIP_Z_INDEX: 1000000,
-  TIP_BOX_SHADOW: 'box-shadow: 0 0 5px 0 #ccc',
+  TIP_BOX_SHADOW: '0 0 5px 0 #ccc',
   TIP_DESCRIPTION_LINE_HEIGHT: 1.3,
   TIP_DESCRIPTION_FONT_SIZE: '1rem',
   TIP_DESCRIPTION_MARGIN: '0 0 .5em 0',

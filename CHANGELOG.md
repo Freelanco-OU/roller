@@ -1,4 +1,8 @@
-# 0.2.0
+# 0.2.1
+
+- Fix bug with tip's `box-shadow` bug.
+
+## 0.2.0
 
 - Transfer codebase to Flow.
 - Fix `margin-bottom` of description in *popover*.
