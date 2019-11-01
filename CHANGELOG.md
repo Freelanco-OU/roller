@@ -1,4 +1,8 @@
-# 0.2.2
+# 0.2.3
+
+- Fix global overlay to be closed on skipping guide.
+
+## 0.2.2
 
 - Fix opacity of tip if it will be reshowed.
 

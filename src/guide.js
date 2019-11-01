@@ -66,6 +66,11 @@ class Guide {
       onSkip: (event) => {
         this.cancel()
 
+        if (this._isGlobalOverlayShowed) {
+          this._overlay.close()
+          this._isGlobalOverlayShowed = false
+        }
+
         if (this._onSkip) {
           this._onSkip()
         }
