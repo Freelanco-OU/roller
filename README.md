@@ -4,7 +4,7 @@ The package exports six classes: `Roller`, `Guide`, `Overlay`, `Popover`, `Focus
 
 ## Focus
 
-It is the main class that represent element that need to be highlighted. It takes selector of element or element itself and optional parameter *options*:
+It is the main class that represent element that need to be highlighted. It receives *options* that must contain `element` property that represents CSS selector of element or `HTMLElement` itself:
 
 ```javascript
 const focus = new Focus('.some-class', {
@@ -13,6 +13,7 @@ const focus = new Focus('.some-class', {
     // node - DOM element that is highlighted.
     // `wait` asynchronous function is used if code must wait for some time
   },
+  element: '.some-element', // Element that will be highlighted
   async afterHighlight(node, wait) {
     // some code
     // node - DOM element that is highlighted.
@@ -21,7 +22,9 @@ const focus = new Focus('.some-class', {
 })
 // or
 const element = document.querySelector('.some-class')
-const focus = new Focus(element)
+if (element) {
+  const focus = new Focus({ element })
+}
 ```
 
 ## Overlay

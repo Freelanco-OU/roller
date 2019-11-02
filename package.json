@@ -1,6 +1,6 @@
 {
   "name": "@freelanco/roller",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Light asynchronous intro package.",
   "main": "./dist/index.js",
   "homepage": "https://github.com/Freelanco-OU/roller",
@@ -39,7 +39,7 @@
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "flow-bin": "^0.111.0",
-    "flow-remove-types": "^2.111.0"
+    "flow-bin": "^0.111.1",
+    "flow-remove-types": "^2.111.1"
   }
 }

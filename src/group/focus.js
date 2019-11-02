@@ -10,6 +10,7 @@ const { wait, animate } = require('../utils/helpers.js')
 
 type FocusOptions = {
   beforeHighlight?: (node: HTMLElement, wait: typeof wait) => Promise<void>,
+  element: HTMLElement | string,
   afterHighlight?: (node: HTMLElement, wait: typeof wait) => Promise<void>
 }
 
@@ -24,9 +25,15 @@ class Focus {
   /**
    * Construct `Focus` instance.
    */
-  constructor(element: HTMLElement | string, options?: FocusOptions) {
-    if (typeof element === 'string') {
-      const el = document.querySelector(element)
+  constructor(options: FocusOptions) {
+    this._options = options
+  }
+
+  /** Highlight single `element` on the page. */
+  async highlight() {
+    // Receives element from the page.
+    if (typeof this._options.element === 'string') {
+      const el = document.querySelector(this._options.element)
 
       if (el) {
         this.node = el
@@ -36,14 +43,10 @@ class Focus {
         )
       }
     } else {
-      this.node = element
+      this.node = this._options.element
     }
+    // End receiving element from the page.
 
-    this._options = options || {}
-  }
-
-  /** Highlight single `element` on the page. */
-  async highlight() {
     if (this._options.beforeHighlight) {
       await this._options.beforeHighlight(this.node, wait)
     }
@@ -88,7 +91,6 @@ class Focus {
     const node = this.node
 
     const transitionDuration = parseFloat(node.style.transitionDuration)
-    const transition = node.style.transition
 
     // Disable transition for proper animation
     node.style.transition = 'unset'
@@ -104,7 +106,6 @@ class Focus {
       onEnd() {
         node.removeAttribute('style')
         node.classList.remove('roller-highlighted-element')
-        node.style.transition = transition
       }
     })
   }

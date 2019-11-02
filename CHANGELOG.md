@@ -1,4 +1,10 @@
-# 0.2.4
+# 0.3.0
+
+- Change constructor signature of `Focus` class. It receives only *options* object now.
+*element* parameter is moved to *options*.
+- Remove setting inline `transition` for `Focus` element.
+
+## 0.2.4
 
 - Change position of popover to `absolute` if page have scroll.
 - Edit README.
