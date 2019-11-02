@@ -18,7 +18,7 @@ module.exports = {
   OVERLAY_LEFT: 0,
   OVERLAY_RIGHT: 0,
 
-  POPOVER_POSITION: 'fixed',
+  POPOVER_POSITION: 'absolute',
   POPOVER_PADDING: '.8em',
   POPOVER_OFFSET: 10, // pixels
   POPOVER_Z_INDEX: 1000000,

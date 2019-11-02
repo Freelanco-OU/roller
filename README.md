@@ -8,12 +8,14 @@ It is the main class that represent element that need to be highlighted. It take
 
 ```javascript
 const focus = new Focus('.some-class', {
-  async beforeHighlight(wait) {
+  async beforeHighlight(node, wait) {
     // some code
+    // node - DOM element that is highlighted.
     // `wait` asynchronous function is used if code must wait for some time
   },
-  async afterHighlight(wait) {
+  async afterHighlight(node, wait) {
     // some code
+    // node - DOM element that is highlighted.
     // `wait` asynchronous function is used if code must wait for some time
   }
 })

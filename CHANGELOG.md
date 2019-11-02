@@ -1,4 +1,9 @@
-# 0.2.3
+# 0.2.4
+
+- Change position of popover to `absolute` if page have scroll.
+- Edit README.
+
+## 0.2.3
 
 - Fix global overlay to be closed on skipping guide.
 
