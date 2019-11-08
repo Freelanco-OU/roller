@@ -32,12 +32,12 @@ roller.highlight({
 Constructor parameters:
 
 - *options*?: Object
-  - *onOverlayClick*?: (group: [HighlightGroup](Types), event: MouseEvent): void - this function defines what is need to be done on click on `Overlay`. By default it closes the whole *group*.
+  - *onOverlayClick*?: (group: HighlightGroup, event: MouseEvent): void - this function defines what is need to be done on click on `Overlay`. By default it closes the whole *group*.
 
 Methods:
 
-- *highlight*: (group: [HighlightGroup](Types)) => Promise\<void> - highlights *group*.
-- *unHighlight*: (group: [HighlightGroup](Types)) => Promise\<void> - hide *group* and remove its nodes from page.
+- *highlight*: (group: HighlightGroup) => Promise\<void> - highlights *group*.
+- *unHighlight*: (group: HighlightGroup) => Promise\<void> - hide *group* and remove its nodes from page.
 
 ### Guide
 
@@ -115,11 +115,11 @@ const h = new Hover({
 Constructor parameters:
 
 - *options*: Object
-  - *position?: [Position](Types)
-  - *offset?: number - distance from element on the page to `Hover` element.
-  - *hoverStyles?: { [string]: string | number }
-  - *onHover?: (event: MouseEvent) => Promise\<void>
-  - *content: string
+  - *position*?: Position
+  - *offset*?: number - distance from element on the page to `Hover` element.
+  - *hoverStyles*?: { [string]: string | number }
+  - *onHover*?: (event: MouseEvent) => Promise\<void>
+  - *content*: string
 
 Methods:
 

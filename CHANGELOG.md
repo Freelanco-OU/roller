@@ -1,4 +1,8 @@
-# 0.4.0
+# 0.4.1
+
+- Fix typos in README.
+
+## 0.4.0
 
 - Add `Hover` class.
 - Fix positioning of `Hover` and `Popover` instances.
