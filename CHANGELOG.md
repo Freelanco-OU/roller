@@ -1,4 +1,10 @@
-# 0.3.0
+# 0.4.0
+
+- Add `Hover` class.
+- Fix positioning of `Hover` and `Popover` instances.
+- Start rewriting README.
+
+## 0.3.0
 
 - Change constructor signature of `Focus` class. It receives only *options* object now.
 *element* parameter is moved to *options*.

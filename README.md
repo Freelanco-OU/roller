@@ -2,66 +2,14 @@
 
 The package exports six classes: `Roller`, `Guide`, `Overlay`, `Popover`, `Focus` and `Tip`.
 
-## Focus
+## Types
 
-It is the main class that represent element that need to be highlighted. It receives *options* that must contain `element` property that represents CSS selector of element or `HTMLElement` itself:
+- **HighlightGroup** - it is object that contains `Overlay`(optional), `Focus` and `Popover`(optional) instances and `beforeInsert`, `afterRemove` functions.
+- **Position** - 'top' | 'bottom' | 'left' | 'right' | 'auto' - position of created helper element according to element on the page.
 
-```javascript
-const focus = new Focus('.some-class', {
-  async beforeHighlight(node, wait) {
-    // some code
-    // node - DOM element that is highlighted.
-    // `wait` asynchronous function is used if code must wait for some time
-  },
-  element: '.some-element', // Element that will be highlighted
-  async afterHighlight(node, wait) {
-    // some code
-    // node - DOM element that is highlighted.
-    // `wait` asynchronous function is used if code must wait for some time
-  }
-})
-// or
-const element = document.querySelector('.some-class')
-if (element) {
-  const focus = new Focus({ element })
-}
-```
+## API
 
-## Overlay
-
-This class represents overlay on the page. You can set your own initial styles for it, end *opacity* and optional parameter *isolateClickEvents*:
-
-```javascript
-const overlay = new Overlay({
-  initialStyles: {
-    'background-color': 'rgb(234, 54, 95)'
-    // you must write valid CSS expressions in kebab-case
-  },
-  opacity: 0.75, // default
-  isolateClickEvents: false // default. If `true` all events that is propagated inside of overlay will be isolated.
-})
-```
-
-## Popover
-
-This class (if it is presented) represents explanation for highlighted element.
-
-```javascript
-const popover = new Popover({
-  position: 'auto', // default. Position of popover according to element.
-  offset: '10px', // default. Distance of the popover from element.
-  title: 'Some cool title', // Title of the explanation.
-  description: 'Description' // Optional. Detailed description of the explanation.,
-  styles: {
-    // CSS valid styles in kebab-case.
-  },
-  isolateClickEvents: false // default. If `true` all events that is propagated inside of popover will be isolated.
-})
-```
-
-Usually you will not using these classes directly. Together they represents a `group` that is accepted by `Roller` and `Guide`.
-
-## Roller
+### Roller
 
 If you want highlight single element on your page, use `Roller`:
 
@@ -69,7 +17,7 @@ If you want highlight single element on your page, use `Roller`:
 const roller = new Roller({
   onOverLayClick(group) {
     // some code that may change state of group element or
-    // make another job. By default, it closes highlight group.
+    // make another job.
   }
 })
 roller.highlight({
@@ -81,7 +29,17 @@ roller.highlight({
 })
 ```
 
-## Guide
+Constructor parameters:
+
+- *options*?: Object
+  - *onOverlayClick*?: (group: [HighlightGroup](Types), event: MouseEvent): void - this function defines what is need to be done on click on `Overlay`. By default it closes the whole *group*.
+
+Methods:
+
+- *highlight*: (group: [HighlightGroup](Types)) => Promise\<void> - highlights *group*.
+- *unHighlight*: (group: [HighlightGroup](Types)) => Promise\<void> - hide *group* and remove its nodes from page.
+
+### Guide
 
 For creating sequence of highlighting of elements you can use `Guide`.
 
@@ -111,7 +69,64 @@ guide.configure({
 .start() // Starts guide.
 ```
 
-## Tip
+Constructor parameters:
+
+- *options*: Object
+  - *groups*: HighlightGroup[],
+  - *overlay*?: Overlay,
+  - *onDone*?: () => void,
+  - *onSkip*?: () => void
+
+Methods:
+
+- *configure*: (options?: GuideControllerOptions) => Guide:
+  - *skipButtonText*?: string,
+  - *prevButtonText*?: string,
+  - *nextButtonText*?: string,
+  - *doneButtonText*?: string,
+  - *footerStyle*?: { [string]: string | number },
+  - *skipButtonStyle*?: { [string]: string | number },
+  - *prevButtonStyle*?: { [string]: string | number },
+  - *nextButtonStyle*?: { [string]: string | number },
+  - *doneButtonStyle*?: { [string]: string | number }
+
+> All styles keys and value must be valid CSS properties, written in kebab-case.
+
+- *start*: () => void - starts guide.
+- *move*: (step: number) => void - move to specific step. You basically will not use it.
+- *cancel*: () => void - hide highlighted group.
+
+### Hover
+
+This class is created for adding help text on hovering specific element on the page.
+
+```javascript
+const h = new Hover({
+  position: 'top',
+  offset: 10, // pixels
+  hoverStyles: {
+    // styles
+  },
+  onHover: // Function that invokes on element hovering,
+  content: 'Some text'
+})
+```
+
+Constructor parameters:
+
+- *options*: Object
+  - *position?: [Position](Types)
+  - *offset?: number - distance from element on the page to `Hover` element.
+  - *hoverStyles?: { [string]: string | number }
+  - *onHover?: (event: MouseEvent) => Promise\<void>
+  - *content: string
+
+Methods:
+
+- *attachTo*: (element: HTMLElement | string) => void - attach `Hover` instance to element on the page.
+- *detach*: () => void - remove `Hover` instance from the page and detach it from element.
+
+### Tip
 
 This class represents tip on the page. It isn't attached to element on the page, but is positioned according to window.
 
@@ -132,6 +147,63 @@ const tip = new Tip({
   onOk(event) {
     // Invokes on clicking OK
   }
+})
+```
+
+### Focus
+
+It is the main class that represent element that need to be highlighted. It receives *options* that must contain `element` property that represents CSS selector of element or `HTMLElement` itself:
+
+```javascript
+const focus = new Focus('.some-class', {
+  async beforeHighlight(node, wait) {
+    // some code
+    // node - DOM element that is highlighted.
+    // `wait` asynchronous function is used if code must wait for some time
+  },
+  element: '.some-element', // Element that will be highlighted
+  async afterHighlight(node, wait) {
+    // some code
+    // node - DOM element that is highlighted.
+    // `wait` asynchronous function is used if code must wait for some time
+  }
+})
+// or
+const element = document.querySelector('.some-class')
+if (element) {
+  const focus = new Focus({ element })
+}
+```
+
+### Overlay
+
+This class represents overlay on the page. You can set your own initial styles for it, end *opacity* and optional parameter *isolateClickEvents*:
+
+```javascript
+const overlay = new Overlay({
+  initialStyles: {
+    'background-color': 'rgb(234, 54, 95)'
+    // you must write valid CSS expressions in kebab-case
+  },
+  opacity: 0.75, // default
+  isolateClickEvents: false // default. If `true` all events that is propagated inside of overlay will be isolated.
+})
+```
+
+### Popover
+
+This class (if it is presented) represents explanation for highlighted element.
+
+```javascript
+const popover = new Popover({
+  position: 'auto', // default. Position of popover according to element.
+  offset: '10px', // default. Distance of the popover from element.
+  title: 'Some cool title', // Title of the explanation.
+  description: 'Description' // Optional. Detailed description of the explanation.,
+  styles: {
+    // CSS valid styles in kebab-case.
+  },
+  isolateClickEvents: false // default. If `true` all events that is propagated inside of popover will be isolated.
 })
 ```
 

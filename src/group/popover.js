@@ -1,5 +1,7 @@
 // @flow
 
+import type { Position } from '../utils/positioning.js'
+
 const {
   POPOVER_Z_INDEX,
   POPOVER_OFFSET,
@@ -21,11 +23,10 @@ const {
 // eslint-disable-next-line no-unused-vars
 const Controller = require('../controller.js')
 const { stylify, animate } = require('../utils/helpers.js')
-
-type PopoverPosition = 'top' | 'bottom' | 'left' | 'right' | 'auto'
+const { calcPosition } = require('../utils/positioning.js')
 
 type PopoverOptions = {
-  position?: PopoverPosition,
+  position?: Position,
   offset?: number,
   title: string,
   description?: string,
@@ -42,7 +43,7 @@ type PopoverOptions = {
  */
 class Popover {
   _options: {
-    position: PopoverPosition,
+    position: Position,
     offset: number
   }
 
@@ -63,28 +64,34 @@ class Popover {
     const descriptionStyles = styles.description || {}
 
     const popover = document.createElement('aside')
-    popover.setAttribute('style', stylify({
-      position: POPOVER_POSITION,
-      padding: POPOVER_PADDING,
-      'border-radius': POPOVER_BORDER_RADIUS,
-      'background-color': POPOVER_BACKGROUND_COLOR,
-      opacity: POPOVER_OPACITY,
-      'max-width': POPOVER_MAX_WIDTH,
-      'z-index': POPOVER_Z_INDEX,
-      // $FlowFixMe
-      ...popoverStyles
-    }))
+    popover.setAttribute(
+      'style',
+      stylify({
+        position: POPOVER_POSITION,
+        padding: POPOVER_PADDING,
+        'border-radius': POPOVER_BORDER_RADIUS,
+        'background-color': POPOVER_BACKGROUND_COLOR,
+        opacity: POPOVER_OPACITY,
+        'max-width': POPOVER_MAX_WIDTH,
+        'z-index': POPOVER_Z_INDEX,
+        // $FlowFixMe
+        ...popoverStyles
+      })
+    )
     popover.classList.add('roller-popover')
 
     const title = document.createElement('h4')
-    title.setAttribute('style', stylify({
-      margin: POPOVER_TITLE_MARGIN,
-      'font-size': POPOVER_TITLE_FONT_SIZE,
-      'line-height': POPOVER_TITLE_LINE_HEIGHT,
-      'text-align': POPOVER_TITLE_TEXT_ALIGN,
-      // $FlowFixMe
-      ...titleStyles
-    }))
+    title.setAttribute(
+      'style',
+      stylify({
+        margin: POPOVER_TITLE_MARGIN,
+        'font-size': POPOVER_TITLE_FONT_SIZE,
+        'line-height': POPOVER_TITLE_LINE_HEIGHT,
+        'text-align': POPOVER_TITLE_TEXT_ALIGN,
+        // $FlowFixMe
+        ...titleStyles
+      })
+    )
     title.append(options.title)
     popover.append(title)
 
@@ -92,13 +99,16 @@ class Popover {
       const descriptionText = options.description
 
       const description = document.createElement('p')
-      description.setAttribute('style', stylify({
-        margin: POPOVER_DESCRIPTION_MARGIN,
-        'font-size': POPOVER_DESCRIPTION_FONT_SIZE,
-        'line-height': POPOVER_DESCRIPTION_LINE_HEIGHT,
-        // $FlowFixMe
-        ...descriptionStyles
-      }))
+      description.setAttribute(
+        'style',
+        stylify({
+          margin: POPOVER_DESCRIPTION_MARGIN,
+          'font-size': POPOVER_DESCRIPTION_FONT_SIZE,
+          'line-height': POPOVER_DESCRIPTION_LINE_HEIGHT,
+          // $FlowFixMe
+          ...descriptionStyles
+        })
+      )
       description.append(descriptionText)
       popover.append(description)
     }
@@ -122,27 +132,26 @@ class Popover {
    * Construct and show popover near highlighted element.
    */
   show(element: HTMLElement) {
-    // Sets and restore transition if user return to previous step.
-    this.node.style.transition = `${POPOVER_TRANSITION}` // TODO: fix transition from popoverStyles
-
-    if (document.body) {
-      document.body.append(this.node)
-    }
-
-    requestAnimationFrame(() => {
-      this.node.style.opacity = '1'
-    })
-
     const repaintFunction = () => {
       const elementSize = element.getBoundingClientRect()
-      calcPopoverPosition(elementSize, this.node, this._options)
+      calcPosition(elementSize, this.node, this._options)
     }
-    this._onResize = (event: Event) => {
-      repaintFunction()
-    }
-    window.addEventListener('resize', this._onResize)
 
+    // Sets and restore transition if user return to previous step.
+    this.node.style.transition = `${POPOVER_TRANSITION}` // TODO: fix transition from popoverStyles
     repaintFunction()
+    if (document.body) {
+      document.body.append(this.node)
+
+      requestAnimationFrame(() => {
+        this.node.style.opacity = '1'
+      })
+
+      this._onResize = (event: Event) => {
+        repaintFunction()
+      }
+      window.addEventListener('resize', this._onResize)
+    }
   }
 
   /** Closes this popover. */
@@ -174,77 +183,6 @@ class Popover {
    */
   _addController(controller: Controller) {
     this.node.append(controller.node)
-  }
-}
-
-/**
- * Calculate position of popover.
- * `elementSize` - Element concerning which popover need to be positioned.
- * `position` - String that signal what position of popover is preferred. Default `auto`.
- */
-function calcPopoverPosition(
-  elementSize: ClientRect | DOMRect,
-  popover: HTMLElement,
-  options: {
-    position: PopoverPosition,
-    offset: number
-  }) {
-  const popoverSize = popover.getBoundingClientRect()
-
-  switch (options.position) {
-    case 'top':
-      popover.style.top = `${elementSize.top - options.offset - popoverSize.height}px`
-      popover.style.left = `${elementSize.left}px`
-      break
-    case 'right':
-      popover.style.top = `${elementSize.top}px`
-      popover.style.left = `${elementSize.right + options.offset}px`
-      break
-    case 'left':
-      popover.style.top = `${elementSize.top}px`
-      popover.style.left = `${elementSize.left - options.offset - popoverSize.width}px`
-      break
-    case 'bottom':
-      popover.style.bottom = `${elementSize.bottom + options.offset + popoverSize.height}px`
-      popover.style.left = `${elementSize.left}px`
-      break
-    default:
-      autoPositionPopover(elementSize, popover, options)
-  }
-}
-
-/**
- * Calculate position of popover.
- * `elementSize` - Element concerning which popover need to be positioned.
- */
-function autoPositionPopover(elementSize: ClientRect | DOMRect, popover: HTMLElement, options: { offset: number }) {
-  const { offset } = options
-
-  const documentSize = document.body
-    ? document.body.getBoundingClientRect()
-    : { width: 0, height: 0 }
-  const popoverSize = popover.getBoundingClientRect()
-
-  if ((elementSize.top - offset) - popoverSize.height > 0) {
-    calcPopoverPosition(elementSize, popover, {
-      position: 'top',
-      offset
-    })
-  } else if ((documentSize.width - elementSize.right - offset) - popoverSize.width > 0) {
-    calcPopoverPosition(elementSize, popover, {
-      position: 'right',
-      offset
-    })
-  } else if ((documentSize.height - elementSize.bottom - offset) - popoverSize.height > 0) {
-    calcPopoverPosition(elementSize, popover, {
-      position: 'bottom',
-      offset
-    })
-  } else {
-    calcPopoverPosition(elementSize, popover, {
-      position: 'left',
-      offset
-    })
   }
 }
 

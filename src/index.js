@@ -6,6 +6,7 @@ const Popover = require('./group/popover')
 const Overlay = require('./group/overlay')
 const Guide = require('./guide')
 const Tip = require('./tip')
+const Hover = require('./hover')
 
 module.exports = {
   Focus,
@@ -14,4 +15,5 @@ module.exports = {
   Overlay,
   Guide,
   Tip,
+  Hover
 }
