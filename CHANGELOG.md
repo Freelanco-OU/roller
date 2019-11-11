@@ -1,6 +1,7 @@
 # 0.4.2
 
-- 
+- Fix positioning of `Hover` and `Popover`. Add *line-height* and *box-shadow* to `Hover`.
+- Change version of the package. Make `Hover` to be inserted in DOM and removed on hover.
 
 ## 0.4.1
 
