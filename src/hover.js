@@ -32,8 +32,8 @@ class Hover {
   node: HTMLElement
   _options: HoverOptions
 
-  _onMouseOver: (event: MouseEvent) => void
-  _onMouseOut: (event: MouseEvent) => void
+  _onMouseEnter: (event: MouseEvent) => void
+  _onMouseLeave: (event: MouseEvent) => void
 
   constructor(options: HoverOptions) {
     const hoverStyles = options.hoverStyles || {}
@@ -70,7 +70,7 @@ class Hover {
       this.to = element
     }
 
-    this._onMouseOver = (event: MouseEvent) => {
+    this._onMouseEnter = (event: MouseEvent) => {
       const elementSize = this.to.getBoundingClientRect()
       calcPosition(elementSize, this.node, {
         offset: this._options.offset || HOVER_OFFSET,
@@ -89,7 +89,7 @@ class Hover {
         this._options.onHover(event)
       }
     }
-    this._onMouseOut = (event: MouseEvent) => {
+    this._onMouseLeave = (event: MouseEvent) => {
       const node = this.node
 
       const transitionDuration = parseFloat(node.style.transitionDuration)
@@ -111,14 +111,14 @@ class Hover {
       })
     }
 
-    this.to.addEventListener('mouseenter', this._onMouseOver)
-    this.to.addEventListener('mouseleave', this._onMouseOut)
+    this.to.addEventListener('mouseenter', this._onMouseEnter)
+    this.to.addEventListener('mouseleave', this._onMouseLeave)
   }
 
   detach(): void {
     if (this.to) {
-      this.to.removeEventListener('mouseenter', this._onMouseOver)
-      this.to.removeEventListener('mouseleave', this._onMouseOut)
+      this.to.removeEventListener('mouseenter', this._onMouseEnter)
+      this.to.removeEventListener('mouseleave', this._onMouseLeave)
     }
     this.node.remove()
   }
