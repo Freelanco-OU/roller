@@ -6,3 +6,4 @@ package-lock.json
 .eslintrc.json
 .flowconfig
 .prettierrc.json
+.meteor-portable-2.json
