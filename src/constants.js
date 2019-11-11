@@ -85,5 +85,7 @@ module.exports = {
   HOVER_TRANSITION: '.3s ease-out',
   HOVER_OPACITY: 0,
   HOVER_MAX_WIDTH: '320px',
-  HOVER_TEXT_ALIGN: 'justify'
+  HOVER_TEXT_ALIGN: 'justify',
+  HOVER_LINE_HEIGHT: 1.3,
+  HOVER_BOX_SHADOW: '0 0 5px 0 #ccc'
 }

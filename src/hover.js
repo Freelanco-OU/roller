@@ -12,7 +12,9 @@ const {
   HOVER_TRANSITION,
   HOVER_OPACITY,
   HOVER_MAX_WIDTH,
-  HOVER_TEXT_ALIGN
+  HOVER_TEXT_ALIGN,
+  HOVER_LINE_HEIGHT,
+  HOVER_BOX_SHADOW
 } = require('./constants.js')
 const { stylify, animate } = require('./utils/helpers.js')
 const { calcPosition } = require('./utils/positioning.js')
@@ -48,6 +50,8 @@ class Hover {
       'max-width': HOVER_MAX_WIDTH,
       'background-color': HOVER_BACKGROUND_COLOR,
       'text-align': HOVER_TEXT_ALIGN,
+      'line-height': HOVER_LINE_HEIGHT,
+      'box-shadow': HOVER_BOX_SHADOW,
       // $FlowFixMe
       ...hoverStyles
     }))
@@ -71,15 +75,16 @@ class Hover {
     }
 
     this._onMouseEnter = (event: MouseEvent) => {
+      if (document.body) {
+        document.body.append(this.node)
+      }
+
       const elementSize = this.to.getBoundingClientRect()
       calcPosition(elementSize, this.node, {
         offset: this._options.offset || HOVER_OFFSET,
         position: this._options.position || 'auto'
       })
 
-      if (document.body) {
-        document.body.append(this.node)
-      }
       requestAnimationFrame(() => {
         this.node.style.transition = HOVER_TRANSITION
         this.node.style.opacity = '1'

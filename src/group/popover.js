@@ -139,11 +139,12 @@ class Popover {
 
     // Sets and restore transition if user return to previous step.
     this.node.style.transition = `${POPOVER_TRANSITION}` // TODO: fix transition from popoverStyles
-    repaintFunction()
+
     if (document.body) {
       document.body.append(this.node)
 
       requestAnimationFrame(() => {
+        repaintFunction()
         this.node.style.opacity = '1'
       })
 

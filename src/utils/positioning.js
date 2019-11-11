@@ -15,13 +15,13 @@ function calcPosition(
     offset: number
   }
 ) {
-  const helperSize = helper.getBoundingClientRect()
+  const helperSize = (getComputedStyle(helper): CSSStyleDeclaration)
 
   switch (options.position) {
     case 'top':
       helper.style.top = `${elementSize.top -
         options.offset -
-        helperSize.height}px`
+        parseFloat(helperSize.height)}px`
       helper.style.left = `${elementSize.left}px`
       break
     case 'right':
@@ -32,7 +32,7 @@ function calcPosition(
       helper.style.top = `${elementSize.top}px`
       helper.style.left = `${elementSize.left -
         options.offset -
-        helperSize.width}px`
+        parseFloat(helperSize.width)}px`
       break
     case 'bottom':
       helper.style.top = `${elementSize.bottom + options.offset}px`
@@ -57,15 +57,18 @@ function autoPosition(
   const documentSize = document.body
     ? document.body.getBoundingClientRect()
     : { width: 0, height: 0 }
-  const helperSize = helper.getBoundingClientRect()
+  const helperSize = (getComputedStyle(helper): CSSStyleDeclaration)
 
-  if (elementSize.top - offset - helperSize.height > 0) {
+  if (elementSize.top - offset - parseFloat(helperSize.height) > 0) {
     calcPosition(elementSize, helper, {
       position: 'top',
       offset
     })
   } else if (
-    documentSize.width - elementSize.right - offset - helperSize.width >
+    documentSize.width -
+      elementSize.right -
+      offset -
+      parseFloat(helperSize.width) >
     0
   ) {
     calcPosition(elementSize, helper, {
@@ -73,7 +76,10 @@ function autoPosition(
       offset
     })
   } else if (
-    documentSize.height - elementSize.bottom - offset - helperSize.height >
+    documentSize.height -
+      elementSize.bottom -
+      offset -
+      parseFloat(helperSize.height) >
     0
   ) {
     calcPosition(elementSize, helper, {
