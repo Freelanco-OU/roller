@@ -14,7 +14,7 @@ const {
   HOVER_MAX_WIDTH,
   HOVER_TEXT_ALIGN
 } = require('./constants.js')
-const { stylify } = require('./utils/helpers.js')
+const { stylify, animate } = require('./utils/helpers.js')
 const { calcPosition } = require('./utils/positioning.js')
 
 type HoverOptions = {
@@ -44,7 +44,6 @@ class Hover {
       padding: HOVER_PADDING,
       'z-index': HOVER_Z_INDEX,
       'border-radius': HOVER_BORDER_RADIUS,
-      transition: HOVER_TRANSITION,
       opacity: HOVER_OPACITY,
       'max-width': HOVER_MAX_WIDTH,
       'background-color': HOVER_BACKGROUND_COLOR,
@@ -77,7 +76,12 @@ class Hover {
         offset: this._options.offset || HOVER_OFFSET,
         position: this._options.position || 'auto'
       })
+
+      if (document.body) {
+        document.body.append(this.node)
+      }
       requestAnimationFrame(() => {
+        this.node.style.transition = HOVER_TRANSITION
         this.node.style.opacity = '1'
       })
 
@@ -86,21 +90,35 @@ class Hover {
       }
     }
     this._onMouseOut = (event: MouseEvent) => {
-      this.node.style.opacity = `${HOVER_OPACITY}`
+      const node = this.node
+
+      const transitionDuration = parseFloat(node.style.transitionDuration)
+
+      // Disable transition for proper animation
+      node.style.transition = 'unset'
+
+      animate({
+        duration: transitionDuration,
+        timing(time) {
+          return 1 - time ** 2
+        },
+        draw(progress) {
+          node.style.opacity = progress.toPrecision(3)
+        },
+        onEnd() {
+          node.remove()
+        }
+      })
     }
 
-    this.to.addEventListener('mouseover', this._onMouseOver)
-    this.to.addEventListener('mouseout', this._onMouseOut)
-
-    if (document.body) {
-      document.body.append(this.node)
-    }
+    this.to.addEventListener('mouseenter', this._onMouseOver)
+    this.to.addEventListener('mouseleave', this._onMouseOut)
   }
 
   detach(): void {
     if (this.to) {
-      this.to.removeEventListener('mouseover', this._onMouseOver)
-      this.to.removeEventListener('mouseout', this._onMouseOut)
+      this.to.removeEventListener('mouseenter', this._onMouseOver)
+      this.to.removeEventListener('mouseleave', this._onMouseOut)
     }
     this.node.remove()
   }
