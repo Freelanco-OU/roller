@@ -7,6 +7,7 @@ const Focus = require('./group/focus.js')
 // eslint-disable-next-line no-unused-vars
 const Popover = require('./group/popover.js')
 const { wait } = require('./utils/helpers.js')
+const { autoScrollTo } = require('./utils/scrolling.js')
 
 export type HighlightGroup = {
   beforeInsert?: (wait: typeof wait) => Promise<void>,
@@ -74,7 +75,13 @@ class Roller {
       })
     }
     const htmlElement = await element.highlight()
-    if (popover && htmlElement) {
+
+    autoScrollTo(
+      htmlElement.getBoundingClientRect(),
+      popover ? popover.node.getBoundingClientRect() : undefined
+    )
+
+    if (popover) {
       popover.show(htmlElement)
     }
   }

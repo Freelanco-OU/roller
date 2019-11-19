@@ -31,13 +31,13 @@ roller.highlight({
 
 Constructor parameters:
 
-- *options*?: Object
-  - *onOverlayClick*?: (group: HighlightGroup, event: MouseEvent): void - this function defines what is need to be done on click on `Overlay`. By default it closes the whole *group*.
+- *options*?: `Object`
+  - *onOverlayClick*?: `(group: HighlightGroup, event: MouseEvent): void` - this function defines what is need to be done on click on `Overlay`. By default it closes the whole *group*.
 
 Methods:
 
-- *highlight*: (group: HighlightGroup) => Promise\<void> - highlights *group*.
-- *unHighlight*: (group: HighlightGroup) => Promise\<void> - hide *group* and remove its nodes from page.
+- *highlight*: `(group: HighlightGroup) => Promise\<void>` - highlights *group*.
+- *unHighlight*: `(group: HighlightGroup) => Promise\<void>` - hide *group* and remove its nodes from page.
 
 ### Guide
 
@@ -71,30 +71,30 @@ guide.configure({
 
 Constructor parameters:
 
-- *options*: Object
-  - *groups*: HighlightGroup[],
-  - *overlay*?: Overlay,
-  - *onDone*?: () => void,
-  - *onSkip*?: () => void
+- *options*: `Object`
+  - *groups*: `HighlightGroup[]`,
+  - *overlay*?: `Overlay`,
+  - *onDone*?: `() => void`,
+  - *onSkip*?: `() => void`
 
 Methods:
 
-- *configure*: (options?: GuideControllerOptions) => Guide:
-  - *skipButtonText*?: string,
-  - *prevButtonText*?: string,
-  - *nextButtonText*?: string,
-  - *doneButtonText*?: string,
-  - *footerStyle*?: { [string]: string | number },
-  - *skipButtonStyle*?: { [string]: string | number },
-  - *prevButtonStyle*?: { [string]: string | number },
-  - *nextButtonStyle*?: { [string]: string | number },
-  - *doneButtonStyle*?: { [string]: string | number }
+- *configure*: `(options?: GuideControllerOptions) => Guide`:
+  - *skipButtonText*?: `string`,
+  - *prevButtonText*?: `string`,
+  - *nextButtonText*?: `string`,
+  - *doneButtonText*?: `string`,
+  - *footerStyle*?: `{ [string]: string | number }`,
+  - *skipButtonStyle*?: `{ [string]: string | number }`,
+  - *prevButtonStyle*?: `{ [string]: string | number }`,
+  - *nextButtonStyle*?: `{ [string]: string | number }`,
+  - *doneButtonStyle*?: `{ [string]: string | number }`
 
 > All styles keys and value must be valid CSS properties, written in kebab-case.
 
-- *start*: () => void - starts guide.
-- *move*: (step: number) => void - move to specific step. You basically will not use it.
-- *cancel*: () => void - hide highlighted group.
+- *start*: `() => void` - starts guide.
+- *move*: `(step: number) => void` - move to specific step. You basically will not use it.
+- *cancel*: `() => void` - hide highlighted group.
 
 ### Hover
 
@@ -114,17 +114,17 @@ const h = new Hover({
 
 Constructor parameters:
 
-- *options*: Object
-  - *position*?: Position
-  - *offset*?: number - distance from element on the page to `Hover` element.
-  - *hoverStyles*?: { [string]: string | number }
-  - *onHover*?: (event: MouseEvent) => Promise\<void>
-  - *content*: string
+- *options*: `Object`
+  - *position*?: `Position`
+  - *offset*?: `number` - distance from element on the page to `Hover` element.
+  - *hoverStyles*?: `{ [string]: string | number }`
+  - *onHover*?: `(event: MouseEvent) => Promise\<void>`
+  - *content*: `string`
 
 Methods:
 
-- *attachTo*: (element: HTMLElement | string) => void - attach `Hover` instance to element on the page.
-- *detach*: () => void - remove `Hover` instance from the page and detach it from element.
+- *attachTo*: `(element: HTMLElement | string) => void` - attach `Hover` instance to element on the page.
+- *detach*: `() => void` - remove `Hover` instance from the page and detach it from element.
 
 ### Tip
 

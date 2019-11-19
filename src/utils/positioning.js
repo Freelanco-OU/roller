@@ -1,5 +1,7 @@
 // @flow
 
+const { offset } = require('./scrolling.js')
+
 export type Position = 'top' | 'bottom' | 'left' | 'right' | 'auto'
 
 /**
@@ -19,24 +21,24 @@ function calcPosition(
 
   switch (options.position) {
     case 'top':
-      helper.style.top = `${elementSize.top -
+      helper.style.top = `${offset(elementSize).top -
         options.offset -
         parseFloat(helperSize.height)}px`
-      helper.style.left = `${elementSize.left}px`
+      helper.style.left = `${offset(elementSize).left}px`
       break
     case 'right':
-      helper.style.top = `${elementSize.top}px`
-      helper.style.left = `${elementSize.right + options.offset}px`
+      helper.style.top = `${offset(elementSize).top}px`
+      helper.style.left = `${offset(elementSize).right + options.offset}px`
       break
     case 'left':
-      helper.style.top = `${elementSize.top}px`
-      helper.style.left = `${elementSize.left -
+      helper.style.top = `${offset(elementSize).top}px`
+      helper.style.left = `${offset(elementSize).left -
         options.offset -
         parseFloat(helperSize.width)}px`
       break
     case 'bottom':
-      helper.style.top = `${elementSize.bottom + options.offset}px`
-      helper.style.left = `${elementSize.left}px`
+      helper.style.top = `${offset(elementSize).bottom + options.offset}px`
+      helper.style.left = `${offset(elementSize).left}px`
       break
     default:
       autoPosition(elementSize, helper, options)

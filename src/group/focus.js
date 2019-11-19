@@ -7,6 +7,7 @@ const {
   ELEMENT_BACKGROUND_COLOR
 } = require('../constants.js')
 const { wait, animate } = require('../utils/helpers.js')
+const { autoScrollTo } = require('../utils/scrolling.js')
 
 type FocusOptions = {
   beforeHighlight?: (node: HTMLElement, wait: typeof wait) => Promise<void>,
@@ -46,6 +47,8 @@ class Focus {
       this.node = this._options.element
     }
     // End receiving element from the page.
+
+    autoScrollTo(this.node.getBoundingClientRect())
 
     if (this._options.beforeHighlight) {
       await this._options.beforeHighlight(this.node, wait)

@@ -1,4 +1,9 @@
-# 0.4.2
+# 0.5.0
+
+- Add autoscrolling to `Focus` and `Roller` if *element* that need to be highlighted is out of the viewport.
+- Small visual changes in README.
+
+## 0.4.2
 
 - Fix positioning of `Hover` and `Popover`. Add *line-height* and *box-shadow* to `Hover`.
 - Change version of the package. Make `Hover` to be inserted in DOM and removed on hover.
