@@ -1,6 +1,6 @@
 # Roller - a gorgeous intro package
 
-The package exports six classes: `Roller`, `Guide`, `Overlay`, `Popover`, `Focus` and `Tip`.
+The package exports seven classes: `Roller`, `Guide`, `Overlay`, `Popover`, `Focus`, `Hover` and `Tip`.
 
 ## Types
 

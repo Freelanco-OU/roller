@@ -1,4 +1,9 @@
-# 0.5.0
+# 0.5.1
+
+- Add `roller-hover` class to `Hover` element.
+- Small fix in README.
+
+## 0.5.0
 
 - Add autoscrolling to `Focus` and `Roller` if *element* that need to be highlighted is out of the viewport.
 - Small visual changes in README.

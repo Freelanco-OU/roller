@@ -41,6 +41,7 @@ class Hover {
     const hoverStyles = options.hoverStyles || {}
 
     const hoverContainer = document.createElement('aside')
+    hoverContainer.classList.add('roller-hover')
     hoverContainer.setAttribute('style', stylify({
       position: HOVER_POSITION,
       padding: HOVER_PADDING,
