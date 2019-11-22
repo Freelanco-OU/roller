@@ -1,4 +1,8 @@
-# 0.5.1
+# 0.5.2
+
+- Fix removing `style` attribute in highlighted element if it contained one already.
+
+## 0.5.1
 
 - Add `roller-hover` class to `Hover` element.
 - Small fix in README.

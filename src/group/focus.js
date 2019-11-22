@@ -22,6 +22,7 @@ class Focus {
   node: HTMLElement
   _options: FocusOptions
   _initialStyles: CSSStyleDeclaration
+  _nodeStyleAttribute: ?string
 
   /**
    * Construct `Focus` instance.
@@ -56,6 +57,7 @@ class Focus {
 
     // Remember initial styles of element. Will be needed in canceling focus.
     this._initialStyles = (getComputedStyle(this.node): CSSStyleDeclaration)
+    this._nodeStyleAttribute = this.node.getAttribute('style')
 
     let parent = this.node
     let backgroundColor = this._initialStyles.backgroundColor
@@ -92,6 +94,7 @@ class Focus {
   /** Cancel highlight. */
   cancel() {
     const node = this.node
+    const styleAttributeValue = this._nodeStyleAttribute
 
     const transitionDuration = parseFloat(node.style.transitionDuration)
 
@@ -107,7 +110,9 @@ class Focus {
         node.style.opacity = progress.toPrecision(3)
       },
       onEnd() {
-        node.removeAttribute('style')
+        styleAttributeValue
+          ? node.setAttribute('style', styleAttributeValue)
+          : node.removeAttribute('style')
         node.classList.remove('roller-highlighted-element')
       }
     })
