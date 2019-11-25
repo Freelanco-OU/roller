@@ -94,28 +94,31 @@ class Focus {
   /** Cancel highlight. */
   cancel() {
     const node = this.node
-    const styleAttributeValue = this._nodeStyleAttribute
 
-    const transitionDuration = parseFloat(node.style.transitionDuration)
+    if (node) {
+      const styleAttributeValue = this._nodeStyleAttribute
 
-    // Disable transition for proper animation
-    node.style.transition = 'unset'
+      const transitionDuration = parseFloat(node.style.transitionDuration)
 
-    animate({
-      duration: transitionDuration,
-      timing(time) {
-        return 1 - time ** 2
-      },
-      draw(progress) {
-        node.style.opacity = progress.toPrecision(3)
-      },
-      onEnd() {
-        styleAttributeValue
-          ? node.setAttribute('style', styleAttributeValue)
-          : node.removeAttribute('style')
-        node.classList.remove('roller-highlighted-element')
-      }
-    })
+      // Disable transition for proper animation
+      node.style.transition = 'unset'
+
+      animate({
+        duration: transitionDuration,
+        timing(time) {
+          return 1 - time ** 2
+        },
+        draw(progress) {
+          node.style.opacity = progress.toPrecision(3)
+        },
+        onEnd() {
+          styleAttributeValue
+            ? node.setAttribute('style', styleAttributeValue)
+            : node.removeAttribute('style')
+          node.classList.remove('roller-highlighted-element')
+        }
+      })
+    }
   }
 }
 

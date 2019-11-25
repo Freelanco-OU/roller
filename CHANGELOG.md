@@ -1,4 +1,8 @@
-# 0.5.2
+# 0.5.3
+
+- `Focus`'s method `cancel` doesn't throw an error now if *element* didn't found on the page.
+
+## 0.5.2
 
 - Fix removing `style` attribute in highlighted element if it contained one already.
 
