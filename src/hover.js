@@ -42,20 +42,23 @@ class Hover {
 
     const hoverContainer = document.createElement('aside')
     hoverContainer.classList.add('roller-hover')
-    hoverContainer.setAttribute('style', stylify({
-      position: HOVER_POSITION,
-      padding: HOVER_PADDING,
-      'z-index': HOVER_Z_INDEX,
-      'border-radius': HOVER_BORDER_RADIUS,
-      opacity: HOVER_OPACITY,
-      'max-width': HOVER_MAX_WIDTH,
-      'background-color': HOVER_BACKGROUND_COLOR,
-      'text-align': HOVER_TEXT_ALIGN,
-      'line-height': HOVER_LINE_HEIGHT,
-      'box-shadow': HOVER_BOX_SHADOW,
-      // $FlowFixMe
-      ...hoverStyles
-    }))
+    hoverContainer.setAttribute(
+      'style',
+      stylify({
+        position: HOVER_POSITION,
+        padding: HOVER_PADDING,
+        'z-index': HOVER_Z_INDEX,
+        'border-radius': HOVER_BORDER_RADIUS,
+        opacity: HOVER_OPACITY,
+        'max-width': HOVER_MAX_WIDTH,
+        'background-color': HOVER_BACKGROUND_COLOR,
+        'text-align': HOVER_TEXT_ALIGN,
+        'line-height': HOVER_LINE_HEIGHT,
+        'box-shadow': HOVER_BOX_SHADOW,
+        // $FlowFixMe
+        ...hoverStyles
+      })
+    )
     hoverContainer.append(options.content)
 
     this._options = options
@@ -81,9 +84,13 @@ class Hover {
       }
 
       const elementSize = this.to.getBoundingClientRect()
-      calcPosition(elementSize, this.node, {
-        offset: this._options.offset || HOVER_OFFSET,
-        position: this._options.position || 'auto'
+      calcPosition({
+        elementSize,
+        helper: this.node,
+        options: {
+          offset: this._options.offset || HOVER_OFFSET,
+          position: this._options.position || 'auto'
+        }
       })
 
       requestAnimationFrame(() => {

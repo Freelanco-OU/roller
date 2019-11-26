@@ -139,7 +139,13 @@ class Popover {
 
     const repaintFunction = () => {
       const elementSize = element.getBoundingClientRect()
-      calcPosition(elementSize, this.node, this._options)
+      calcPosition({
+        elementSize,
+        isElementFixed:
+          !!elementStyles.position && elementStyles.position === 'fixed',
+        helper: this.node,
+        options: this._options
+      })
     }
 
     // Sets and restore transition if user return to previous step.

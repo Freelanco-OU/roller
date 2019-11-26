@@ -1,4 +1,8 @@
-# 0.5.4
+# 0.5.5
+
+- Fix positioning of `Popover` and `Hover` when *element* doesn't have **fixed** position. (This bug appeared in previous version of package.)
+
+## 0.5.4
 
 - Fix `Popover` element going away when `Focus` element's *position* is **fixed**.
 

@@ -2,13 +2,14 @@
 
 /** Gets distance of element from top-left corner of document. */
 function offset(
-  element: ClientRect | DOMRect
+  element: ClientRect | DOMRect,
+  fixed?: boolean = false
 ): { top: number, left: number, right: number, bottom: number } {
   return {
-    top: element.top + window.scrollY,
-    bottom: element.bottom + window.scrollY,
-    left: element.left + window.scrollX,
-    right: element.right + window.scrollX
+    top: element.top + (fixed ? 0 : window.scrollY),
+    bottom: element.bottom + (fixed ? 0 : window.scrollY),
+    left: element.left + (fixed ? 0 : window.scrollX),
+    right: element.right + (fixed ? 0 : window.scrollX)
   }
 }
 
