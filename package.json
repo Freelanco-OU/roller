@@ -1,6 +1,6 @@
 {
   "name": "@freelanco/roller",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Light asynchronous intro package.",
   "main": "./dist/index.js",
   "homepage": "https://github.com/Freelanco-OU/roller",

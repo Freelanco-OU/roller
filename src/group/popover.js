@@ -132,6 +132,11 @@ class Popover {
    * Construct and show popover near highlighted element.
    */
   show(element: HTMLElement) {
+    const elementStyles = getComputedStyle(element)
+    if (!!elementStyles.position && elementStyles.position === 'fixed') {
+      this.node.style.position = 'fixed'
+    }
+
     const repaintFunction = () => {
       const elementSize = element.getBoundingClientRect()
       calcPosition(elementSize, this.node, this._options)

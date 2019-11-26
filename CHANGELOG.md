@@ -1,4 +1,8 @@
-# 0.5.3
+# 0.5.4
+
+- Fix `Popover` element going away when `Focus` element's *position* is **fixed**.
+
+## 0.5.3
 
 - `Focus`'s method `cancel` doesn't throw an error now if *element* didn't found on the page.
 
