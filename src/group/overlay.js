@@ -12,7 +12,7 @@ const {
   OVERLAY_RIGHT,
   OVERLAY_TOP
 } = require('../constants.js')
-const { stylify, animate } = require('../utils/helpers.js')
+const { inlineCssFrom, animate } = require('../utils/helpers.js')
 
 type OverlayOptions = {
   initialStyles: { [string]: string | number },
@@ -37,7 +37,7 @@ class Overlay {
 
     overlay.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         position: OVERLAY_POSITION,
         top: OVERLAY_TOP,
         bottom: OVERLAY_BOTTOM,
@@ -70,7 +70,7 @@ class Overlay {
   /** Shows overlay on the page. */
   show() {
     // Sets and restore transition if user return to previous step.
-    this.node.style.transition = `${OVERLAY_TRANSITION}` // TODO: fix transition from initialStyles
+    this.node.style.transition = `${OVERLAY_TRANSITION}`
 
     if (document.body) {
       document.body.append(this.node)

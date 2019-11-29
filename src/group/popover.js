@@ -22,7 +22,7 @@ const {
 } = require('../constants.js')
 // eslint-disable-next-line no-unused-vars
 const Controller = require('../controller.js')
-const { stylify, animate } = require('../utils/helpers.js')
+const { inlineCssFrom, animate } = require('../utils/helpers.js')
 const { calcPosition } = require('../utils/positioning.js')
 
 type PopoverOptions = {
@@ -48,7 +48,7 @@ class Popover {
   }
 
   _onResize: EventHandler
-  node: HTMLElement
+  +node: HTMLElement
 
   /**
    * Build popover.
@@ -66,7 +66,7 @@ class Popover {
     const popover = document.createElement('aside')
     popover.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         position: POPOVER_POSITION,
         padding: POPOVER_PADDING,
         'border-radius': POPOVER_BORDER_RADIUS,
@@ -83,7 +83,7 @@ class Popover {
     const title = document.createElement('h4')
     title.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         margin: POPOVER_TITLE_MARGIN,
         'font-size': POPOVER_TITLE_FONT_SIZE,
         'line-height': POPOVER_TITLE_LINE_HEIGHT,
@@ -101,7 +101,7 @@ class Popover {
       const description = document.createElement('p')
       description.setAttribute(
         'style',
-        stylify({
+        inlineCssFrom({
           margin: POPOVER_DESCRIPTION_MARGIN,
           'font-size': POPOVER_DESCRIPTION_FONT_SIZE,
           'line-height': POPOVER_DESCRIPTION_LINE_HEIGHT,
@@ -149,7 +149,7 @@ class Popover {
     }
 
     // Sets and restore transition if user return to previous step.
-    this.node.style.transition = `${POPOVER_TRANSITION}` // TODO: fix transition from popoverStyles
+    this.node.style.transition = `${POPOVER_TRANSITION}`
 
     if (document.body) {
       document.body.append(this.node)

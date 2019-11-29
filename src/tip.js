@@ -28,7 +28,7 @@ const {
   TIP_CLOSE_BUTTON_MARGIN,
   TIP_BOX_SHADOW
 } = require('./constants.js')
-const { stylify, animate } = require('./utils/helpers.js')
+const { inlineCssFrom, animate } = require('./utils/helpers.js')
 
 type TipPosition = | 'top-right'
     | 'bottom-right'
@@ -51,7 +51,7 @@ type TipOptions = {
 
 /** Describes tip on the page. */
 class Tip {
-  node: HTMLElement
+  +node: HTMLElement
   position: TipPosition
 
   constructor(options: TipOptions) {
@@ -78,7 +78,7 @@ class Tip {
     tip.classList.add('roller-tip')
     tip.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         padding: TIP_PADDING,
         position: TIP_POSITION,
         'border-radius': TIP_BORDER_RADIUS,
@@ -96,7 +96,7 @@ class Tip {
     description.classList.add('roller-tip-description')
     description.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         margin: TIP_DESCRIPTION_MARGIN,
         'font-size': TIP_DESCRIPTION_FONT_SIZE,
         'line-height': TIP_DESCRIPTION_LINE_HEIGHT,
@@ -112,7 +112,7 @@ class Tip {
     const buttonsBlock = document.createElement('div')
     buttonsBlock.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         display: 'flex',
         'justify-content': 'space-between'
       })
@@ -122,7 +122,7 @@ class Tip {
     closeButton.classList.add('roller-tip-close-button')
     closeButton.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         margin: TIP_CLOSE_BUTTON_MARGIN,
         padding: TIP_CLOSE_BUTTON_PADDING,
         outline: TIP_BUTTON_OUTLINE,
@@ -142,7 +142,7 @@ class Tip {
     okButton.classList.add('roller-tip-ok-button')
     okButton.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         margin: TIP_BUTTON_MARGIN,
         padding: TIP_OK_BUTTON_PADDING,
         outline: TIP_BUTTON_OUTLINE,
@@ -172,7 +172,7 @@ class Tip {
   show(): void {
     if (document.body) {
       // Sets and restore transition if user return to previous step.
-      this.node.style.transition = `${TIP_TRANSITION}` // TODO: fix transition from initialStyles
+      this.node.style.transition = `${TIP_TRANSITION}`
 
       document.body.append(this.node)
 

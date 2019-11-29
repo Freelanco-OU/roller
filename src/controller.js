@@ -15,7 +15,7 @@ const {
   CONTROLLER_BUTTON_PREV_MARGIN_RIGHT,
   CONTROLLER_BUTTON_SKIP_MARGIN_RIGHT
 } = require('./constants.js')
-const { stylify, toCamelCase } = require('./utils/helpers.js')
+const { inlineCssFrom, toCamelCase } = require('./utils/helpers.js')
 
 type ControllerOptions = {
   onSkip(event: Event): void,
@@ -57,7 +57,7 @@ class Controller {
 
     footer.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         display: CONTROLLER_DISPLAY,
         'justify-content': CONTROLLER_JUSTIFY_CONTENT,
         'padding-top': CONTROLLER_PADDING_TOP,
@@ -81,7 +81,7 @@ class Controller {
 
     skipButton.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         ...this._buttonStyle,
         'margin-right': CONTROLLER_BUTTON_SKIP_MARGIN_RIGHT,
         // $FlowFixMe
@@ -91,7 +91,7 @@ class Controller {
 
     prevButton.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         ...this._buttonStyle,
         'margin-right': CONTROLLER_BUTTON_PREV_MARGIN_RIGHT,
         // $FlowFixMe
@@ -102,7 +102,7 @@ class Controller {
 
     nextButton.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         ...this._buttonStyle,
         // $FlowFixMe
         ...options.nextButtonStyle

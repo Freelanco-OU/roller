@@ -16,7 +16,7 @@ const {
   HOVER_LINE_HEIGHT,
   HOVER_BOX_SHADOW
 } = require('./constants.js')
-const { stylify, animate } = require('./utils/helpers.js')
+const { inlineCssFrom, animate } = require('./utils/helpers.js')
 const { calcPosition } = require('./utils/positioning.js')
 
 type HoverOptions = {
@@ -44,7 +44,7 @@ class Hover {
     hoverContainer.classList.add('roller-hover')
     hoverContainer.setAttribute(
       'style',
-      stylify({
+      inlineCssFrom({
         position: HOVER_POSITION,
         padding: HOVER_PADDING,
         'z-index': HOVER_Z_INDEX,
